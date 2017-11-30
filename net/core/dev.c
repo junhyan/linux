@@ -7535,7 +7535,7 @@ static void netdev_init_one_queue(struct net_device *dev,
 	spin_lock_init(&queue->_xmit_lock);
 	netdev_set_xmit_lockdep_class(&queue->_xmit_lock, dev->type);
 	queue->xmit_lock_owner = -1;
-	netdev_queue_numa_node_write(queue, NUMA_NO_NODE);
+	netdev_queue_numa_node_write(queue, NUMA_NO_NODE); //define the queue to numa no node -1
 	queue->dev = dev;
 #ifdef CONFIG_BQL
 	dql_init(&queue->dql, HZ);
@@ -7549,7 +7549,7 @@ static void netif_free_tx_queues(struct net_device *dev)
 
 static int netif_alloc_netdev_queues(struct net_device *dev)
 {
-	unsigned int count = dev->num_tx_queues;
+	unsigned int count = dev->num_tx_queues; //tx ring num
 	struct netdev_queue *tx;
 	size_t sz = count * sizeof(*tx);
 
@@ -7562,7 +7562,7 @@ static int netif_alloc_netdev_queues(struct net_device *dev)
 
 	dev->_tx = tx;
 
-	netdev_for_each_tx_queue(dev, netdev_init_one_queue, NULL);
+	netdev_for_each_tx_queue(dev, netdev_init_one_queue, NULL); //inline function callback netdev_init_one_queue,
 	spin_lock_init(&dev->tx_global_lock);
 
 	return 0;
@@ -8094,33 +8094,33 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
 	}
 #endif
 
-	alloc_size = sizeof(struct net_device);
+	alloc_size = sizeof(struct net_device);//alloc netdev size
 	if (sizeof_priv) {
 		/* ensure 32-byte alignment of private area */
 		alloc_size = ALIGN(alloc_size, NETDEV_ALIGN);
-		alloc_size += sizeof_priv;
+		alloc_size += sizeof_priv;//add net_device and ixgbe_adapter  private data
 	}
 	/* ensure 32-byte alignment of whole construct */
 	alloc_size += NETDEV_ALIGN - 1;
 
-	p = kvzalloc(alloc_size, GFP_KERNEL | __GFP_RETRY_MAYFAIL);
+	p = kvzalloc(alloc_size, GFP_KERNEL | __GFP_RETRY_MAYFAIL); // struct net_device
 	if (!p)
 		return NULL;
 
 	dev = PTR_ALIGN(p, NETDEV_ALIGN);
-	dev->padded = (char *)dev - (char *)p;
+	dev->padded = (char *)dev - (char *)p;//pad caused by align
 
-	dev->pcpu_refcnt = alloc_percpu(int);
+	dev->pcpu_refcnt = alloc_percpu(int); //Number of references to this device prrcpu???
 	if (!dev->pcpu_refcnt)
 		goto free_dev;
 
 	if (dev_addr_init(dev))
 		goto free_pcpu;
 
-	dev_mc_init(dev);
-	dev_uc_init(dev);
+	dev_mc_init(dev);//Init multicast address list
+	dev_uc_init(dev);//Init unicast address list
 
-	dev_net_set(dev, &init_net);
+	dev_net_set(dev, &init_net);//Network namespace this network device is inside 
 
 	dev->gso_max_size = GSO_MAX_SIZE;
 	dev->gso_max_segs = GSO_MAX_SEGS;
@@ -8137,7 +8137,7 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
 	hash_init(dev->qdisc_hash);
 #endif
 	dev->priv_flags = IFF_XMIT_DST_RELEASE | IFF_XMIT_DST_RELEASE_PERM;
-	setup(dev);
+	setup(dev);//callback ether_setup init netdev,dev->header_ops     = &eth_header_ops;
 
 	if (!dev->tx_queue_len) {
 		dev->priv_flags |= IFF_NO_QUEUE;
@@ -8146,23 +8146,23 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
 
 	dev->num_tx_queues = txqs;
 	dev->real_num_tx_queues = txqs;
-	if (netif_alloc_netdev_queues(dev))
+	if (netif_alloc_netdev_queues(dev))//alloc tx queues
 		goto free_all;
 
 #ifdef CONFIG_SYSFS
 	dev->num_rx_queues = rxqs;
 	dev->real_num_rx_queues = rxqs;
-	if (netif_alloc_rx_queues(dev))
+	if (netif_alloc_rx_queues(dev))//alloc rx queues
 		goto free_all;
 #endif
 
 	strcpy(dev->name, name);
 	dev->name_assign_type = name_assign_type;
-	dev->group = INIT_NETDEV_GROUP;
+	dev->group = INIT_NETDEV_GROUP; //Initial net device group. All devices belong to group 0 by default
 	if (!dev->ethtool_ops)
 		dev->ethtool_ops = &default_ethtool_ops;
 
-	nf_hook_ingress_init(dev);
+	nf_hook_ingress_init(dev);// init dev->nf_hooks_ingress point to null
 
 	return dev;
 

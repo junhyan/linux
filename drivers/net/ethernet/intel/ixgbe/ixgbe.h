@@ -575,9 +575,9 @@ struct ixgbe_mac_addr {
 struct ixgbe_adapter {
 	unsigned long active_vlans[BITS_TO_LONGS(VLAN_N_VID)]; //4096, active vlan in the nic max 4096
 	/* OS defined structs */
-	struct net_device *netdev;
+	struct net_device *netdev; //delong to the netdev
 	struct bpf_prog *xdp_prog;
-	struct pci_dev *pdev;
+	struct pci_dev *pdev;//the netdev.parentdev
 
 	unsigned long state;
 
@@ -631,16 +631,16 @@ struct ixgbe_adapter {
 #define IXGBE_FLAG2_RX_LEGACY			BIT(16)
 
 	/* Tx fast path data */
-	int num_tx_queues;
+	int num_tx_queues; //tx queue count
 	u16 tx_itr_setting;
-	u16 tx_work_limit;
+	u16 tx_work_limit; //???
 
 	/* Rx fast path data */
 	int num_rx_queues;
 	u16 rx_itr_setting;
 
 	/* Port number used to identify VXLAN traffic */
-	__be16 vxlan_port;
+	__be16 vxlan_port;//vni???
 	__be16 geneve_port;
 
 	/* XDP */
@@ -648,14 +648,14 @@ struct ixgbe_adapter {
 	struct ixgbe_ring *xdp_ring[MAX_XDP_QUEUES];
 
 	/* TX */
-	struct ixgbe_ring *tx_ring[MAX_TX_QUEUES] ____cacheline_aligned_in_smp;
+	struct ixgbe_ring *tx_ring[MAX_TX_QUEUES] ____cacheline_aligned_in_smp; //64
 
 	u64 restart_queue;
 	u64 lsc_int;
 	u32 tx_timeout_count;
 
 	/* RX */
-	struct ixgbe_ring *rx_ring[MAX_RX_QUEUES];
+	struct ixgbe_ring *rx_ring[MAX_RX_QUEUES];//64
 	int num_rx_pools;		/* == num_rx_queues in 82598 */
 	int num_rx_queues_per_pool;	/* 1 if 82598, can be many if 82599 */
 	u64 hw_csum_rx_error;
@@ -667,7 +667,7 @@ struct ixgbe_adapter {
 	u32 alloc_rx_page_failed;
 	u32 alloc_rx_buff_failed;
 
-	struct ixgbe_q_vector *q_vector[MAX_Q_VECTORS];
+	struct ixgbe_q_vector *q_vector[MAX_Q_VECTORS]; //64 ???why not 128
 
 	/* DCB parameters */
 	struct ieee_pfc *ixgbe_ieee_pfc;
@@ -688,7 +688,7 @@ struct ixgbe_adapter {
 	struct ixgbe_ring test_rx_ring;
 
 	/* structs defined in ixgbe_hw.h */
-	struct ixgbe_hw hw;
+	struct ixgbe_hw hw; //hardware informatin.
 	u16 msg_enable;
 	struct ixgbe_hw_stats stats;
 
@@ -728,7 +728,7 @@ struct ixgbe_adapter {
 	u32 interrupt_event;
 	u32 led_reg;
 
-	struct ptp_clock *ptp_clock;
+	struct ptp_clock *ptp_clock;//Precision Time Protocol
 	struct ptp_clock_info ptp_caps;
 	struct work_struct ptp_tx_work;
 	struct sk_buff *ptp_tx_skb;

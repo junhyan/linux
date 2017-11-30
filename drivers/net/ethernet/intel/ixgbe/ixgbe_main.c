@@ -10305,7 +10305,7 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	}
 //Allocates a struct net_device with private data area for driver use and performs basic initialization.  Also allocates subqueue structs for each queue on the device.
 
-	netdev = alloc_etherdev_mq(sizeof(struct ixgbe_adapter), indices);// indices max tx queue
+	netdev = alloc_etherdev_mq(sizeof(struct ixgbe_adapter), indices);// indices max tx queue defined local, alloc_netdev_mqs
     if (!netdev) {
 		err = -ENOMEM;
 		goto err_alloc_etherdev;
@@ -10316,21 +10316,21 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	adapter = netdev_priv(netdev); //access network device private data
 
 	adapter->netdev = netdev;
-	adapter->pdev = pdev;
+	adapter->pdev = pdev; //pci dev
 	hw = &adapter->hw;
 	hw->back = adapter;
 	adapter->msg_enable = netif_msg_init(debug, DEFAULT_MSG_ENABLE);
 
 	hw->hw_addr = ioremap(pci_resource_start(pdev, 0),
-			      pci_resource_len(pdev, 0));
+			      pci_resource_len(pdev, 0));//map dev physical address to the virtrul mem addr to make the driver can be operated.
 	adapter->io_addr = hw->hw_addr;
 	if (!hw->hw_addr) {
 		err = -EIO;
 		goto err_ioremap;
 	}
 
-	netdev->netdev_ops = &ixgbe_netdev_ops;
-	ixgbe_set_ethtool_ops(netdev);
+	netdev->netdev_ops = &ixgbe_netdev_ops;//ixgbe operatation .open .close .start_xmit
+	ixgbe_set_ethtool_ops(netdev); //netdev->ethtool_ops callback &ixgbe_ethtool_ops;
 	netdev->watchdog_timeo = 5 * HZ;
 	strlcpy(netdev->name, pci_name(pdev), sizeof(netdev->name));
 
@@ -10343,7 +10343,7 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	/* EEPROM */
 	hw->eeprom.ops = *ii->eeprom_ops;
-	eec = IXGBE_READ_REG(hw, IXGBE_EEC(hw));
+	eec = IXGBE_READ_REG(hw, IXGBE_EEC(hw)); //EEC???
 	if (ixgbe_removed(hw->hw_addr)) {
 		err = -EIO;
 		goto err_ioremap;
@@ -10364,7 +10364,7 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	hw->phy.mdio.mdio_write = ixgbe_mdio_write;
 
 	/* setup the private structure */
-	err = ixgbe_sw_init(adapter, ii);
+	err = ixgbe_sw_init(adapter, ii);// Initialize general software structures (struct ixgbe_adapter)
 	if (err)
 		goto err_sw_init;
 
