@@ -10313,7 +10313,7 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	SET_NETDEV_DEV(netdev, &pdev->dev);//(netdev)->dev.parent = (pdev) the device to which it is attached
 
-	adapter = netdev_priv(netdev);
+	adapter = netdev_priv(netdev); //access network device private data
 
 	adapter->netdev = netdev;
 	adapter->pdev = pdev;

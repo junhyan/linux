@@ -573,7 +573,7 @@ struct ixgbe_mac_addr {
 
 /* board specific private data structure */
 struct ixgbe_adapter {
-	unsigned long active_vlans[BITS_TO_LONGS(VLAN_N_VID)];
+	unsigned long active_vlans[BITS_TO_LONGS(VLAN_N_VID)]; //4096, active vlan in the nic max 4096
 	/* OS defined structs */
 	struct net_device *netdev;
 	struct bpf_prog *xdp_prog;
