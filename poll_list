@@ -1,0 +1,512 @@
+include/trace/events/napi.h:22:		__string(	dev_name, napi->dev ? napi->dev->name : NO_DEV)
+include/trace/events/napi.h:29:		__assign_str(dev_name, napi->dev ? napi->dev->name : NO_DEV);
+include/net/busy_poll.h:129:	skb->napi_id = napi->napi_id;
+include/linux/netpoll.h:80:	struct net_device *dev = napi->dev;
+include/linux/netpoll.h:85:		while (cmpxchg(&napi->poll_owner, -1, owner) != -1)
+include/linux/netpoll.h:98:		smp_store_release(&napi->poll_owner, -1);
+include/linux/netdevice.h:2104:	set_bit(NAPI_STATE_NO_BUSY_POLL, &napi->state);
+include/linux/netdevice.h:3294:	kfree_skb(napi->skb);
+include/linux/netdevice.h:3295:	napi->skb = NULL;
+drivers/net/can/ti_hecc.c:600:	struct net_device *ndev = napi->dev;
+drivers/net/can/ifi_canfd/ifi_canfd.c:553:	struct net_device *ndev = napi->dev;
+drivers/net/can/xilinx_can.c:705:	struct net_device *ndev = napi->dev;
+drivers/net/can/mscan/mscan.c:392:	struct net_device *dev = napi->dev;
+drivers/net/can/at91_can.c:795:	struct net_device *dev = napi->dev;
+drivers/net/can/m_can/m_can.c:811:	struct net_device *dev = napi->dev;
+drivers/net/can/pch_can.c:739:	struct net_device *ndev = napi->dev;
+drivers/net/can/c_can/c_can.c:1027:	struct net_device *dev = napi->dev;
+drivers/net/ethernet/tile/tilepro.c:821:	struct net_device *dev = napi->dev;
+drivers/net/ethernet/aurora/nb8800.c:296:	struct net_device *dev = napi->dev;
+drivers/net/ethernet/cavium/thunder/nicvf_main.c:872:	struct net_device *netdev = napi->dev;
+drivers/net/ethernet/ibm/ibmvnic.c:1775:	struct net_device *netdev = napi->dev;
+drivers/net/ethernet/cisco/enic/enic_main.c:1496:	struct net_device *netdev = napi->dev;
+drivers/net/ethernet/cisco/enic/enic_main.c:1594:	struct net_device *netdev = napi->dev;
+drivers/net/ethernet/cisco/enic/enic_main.c:1624:	struct net_device *netdev = napi->dev;
+drivers/net/ethernet/apm/xgene-v2/main.c:526:	struct net_device *ndev = napi->dev;
+drivers/net/ethernet/qlogic/qlge/qlge_main.c:1507:	napi->dev = qdev->ndev;
+drivers/net/ethernet/chelsio/cxgb3/sge.c:2511:	return test_bit(NAPI_STATE_SCHED, &napi->state);
+drivers/net/ethernet/renesas/sh_eth.c:1791:	struct net_device *ndev = napi->dev;
+drivers/net/ethernet/renesas/ravb_main.c:915:	struct net_device *ndev = napi->dev;
+drivers/net/ethernet/arc/emac_main.c:270:	struct net_device *ndev = napi->dev;
+drivers/net/ethernet/amazon/ena/ena_netdev.c:1205:	tx_ring = ena_napi->tx_ring;
+drivers/net/ethernet/amazon/ena/ena_netdev.c:1206:	rx_ring = ena_napi->rx_ring;
+drivers/net/ethernet/amazon/ena/ena_netdev.c:1277:	napi_schedule_irqoff(&ena_napi->napi);
+drivers/net/ethernet/amazon/ena/ena_netdev.c:1502:		napi->rx_ring = &adapter->rx_ring[i];
+drivers/net/ethernet/amazon/ena/ena_netdev.c:1503:		napi->tx_ring = &adapter->tx_ring[i];
+drivers/net/ethernet/amazon/ena/ena_netdev.c:1504:		napi->qid = i;
+drivers/net/ethernet/freescale/fec_main.c:1610:	struct net_device *ndev = napi->dev;
+drivers/net/ethernet/marvell/mvneta.c:2725:	struct mvneta_port *pp = netdev_priv(napi->dev);
+drivers/net/ethernet/marvell/mvpp2.c:6721:	struct mvpp2_port *port = netdev_priv(napi->dev);
+drivers/net/ethernet/broadcom/tg3.c:1015:		tw32_mailbox_f(tnapi->int_mbox, tnapi->last_tag << 24);
+drivers/net/ethernet/broadcom/tg3.c:1017:			tw32_mailbox_f(tnapi->int_mbox, tnapi->last_tag << 24);
+drivers/net/ethernet/broadcom/tg3.c:1019:		tp->coal_now |= tnapi->coal_now;
+drivers/net/ethernet/broadcom/tg3.c:1034:	struct tg3 *tp = tnapi->tp;
+drivers/net/ethernet/broadcom/tg3.c:1035:	struct tg3_hw_status *sblk = tnapi->hw_status;
+drivers/net/ethernet/broadcom/tg3.c:1045:	if (sblk->idx[0].tx_consumer != tnapi->tx_cons)
+drivers/net/ethernet/broadcom/tg3.c:1049:	if (tnapi->rx_rcb_prod_idx &&
+drivers/net/ethernet/broadcom/tg3.c:1050:	    *(tnapi->rx_rcb_prod_idx) != tnapi->rx_rcb_ptr)
+drivers/net/ethernet/broadcom/tg3.c:1063:	struct tg3 *tp = tnapi->tp;
+drivers/net/ethernet/broadcom/tg3.c:1065:	tw32_mailbox(tnapi->int_mbox, tnapi->last_tag << 24);
+drivers/net/ethernet/broadcom/tg3.c:1074:		     HOSTCC_MODE_ENABLE | tnapi->coal_now);
+drivers/net/ethernet/broadcom/tg3.c:6466:			   tnapi->hw_status->status,
+drivers/net/ethernet/broadcom/tg3.c:6467:			   tnapi->hw_status->status_tag,
+drivers/net/ethernet/broadcom/tg3.c:6468:			   tnapi->hw_status->rx_jumbo_consumer,
+drivers/net/ethernet/broadcom/tg3.c:6469:			   tnapi->hw_status->rx_consumer,
+drivers/net/ethernet/broadcom/tg3.c:6470:			   tnapi->hw_status->rx_mini_consumer,
+drivers/net/ethernet/broadcom/tg3.c:6471:			   tnapi->hw_status->idx[0].rx_producer,
+drivers/net/ethernet/broadcom/tg3.c:6472:			   tnapi->hw_status->idx[0].tx_consumer);
+drivers/net/ethernet/broadcom/tg3.c:6477:			   tnapi->last_tag, tnapi->last_irq_tag,
+drivers/net/ethernet/broadcom/tg3.c:6478:			   tnapi->tx_prod, tnapi->tx_cons, tnapi->tx_pending,
+drivers/net/ethernet/broadcom/tg3.c:6479:			   tnapi->rx_rcb_ptr,
+drivers/net/ethernet/broadcom/tg3.c:6480:			   tnapi->prodring.rx_std_prod_idx,
+drivers/net/ethernet/broadcom/tg3.c:6481:			   tnapi->prodring.rx_std_cons_idx,
+drivers/net/ethernet/broadcom/tg3.c:6482:			   tnapi->prodring.rx_jmb_prod_idx,
+drivers/net/ethernet/broadcom/tg3.c:6483:			   tnapi->prodring.rx_jmb_cons_idx);
+drivers/net/ethernet/broadcom/tg3.c:6511:	return tnapi->tx_pending -
+drivers/net/ethernet/broadcom/tg3.c:6512:	       ((tnapi->tx_prod - tnapi->tx_cons) & (TG3_TX_RING_SIZE - 1));
+drivers/net/ethernet/broadcom/tg3.c:6521:	struct tg3 *tp = tnapi->tp;
+drivers/net/ethernet/broadcom/tg3.c:6522:	u32 hw_idx = tnapi->hw_status->idx[0].tx_consumer;
+drivers/net/ethernet/broadcom/tg3.c:6523:	u32 sw_idx = tnapi->tx_cons;
+drivers/net/ethernet/broadcom/tg3.c:6534:		struct tg3_tx_ring_info *ri = &tnapi->tx_buffers[sw_idx];
+drivers/net/ethernet/broadcom/tg3.c:6543:		if (tnapi->tx_ring[sw_idx].len_flags & TXD_FLAG_HWTSTAMP) {
+drivers/net/ethernet/broadcom/tg3.c:6563:			ri = &tnapi->tx_buffers[sw_idx];
+drivers/net/ethernet/broadcom/tg3.c:6569:			ri = &tnapi->tx_buffers[sw_idx];
+drivers/net/ethernet/broadcom/tg3.c:6581:				ri = &tnapi->tx_buffers[sw_idx];
+drivers/net/ethernet/broadcom/tg3.c:6600:	tnapi->tx_cons = sw_idx;
+drivers/net/ethernet/broadcom/tg3.c:6727:	struct tg3 *tp = tnapi->tp;
+drivers/net/ethernet/broadcom/tg3.c:6794:	struct tg3 *tp = tnapi->tp;
+drivers/net/ethernet/broadcom/tg3.c:6797:	u32 sw_idx = tnapi->rx_rcb_ptr;
+drivers/net/ethernet/broadcom/tg3.c:6800:	struct tg3_rx_prodring_set *tpr = &tnapi->prodring;
+drivers/net/ethernet/broadcom/tg3.c:6802:	hw_idx = *(tnapi->rx_rcb_prod_idx);
+drivers/net/ethernet/broadcom/tg3.c:6814:		struct tg3_rx_buffer_desc *desc = &tnapi->rx_rcb[sw_idx];
+drivers/net/ethernet/broadcom/tg3.c:6931:		napi_gro_receive(&tnapi->napi, skb);
+drivers/net/ethernet/broadcom/tg3.c:6953:			hw_idx = *(tnapi->rx_rcb_prod_idx);
+drivers/net/ethernet/broadcom/tg3.c:6959:	tnapi->rx_rcb_ptr = sw_idx;
+drivers/net/ethernet/broadcom/tg3.c:6960:	tw32_rx_mbox(tnapi->consmbox, sw_idx);
+drivers/net/ethernet/broadcom/tg3.c:7150:	struct tg3 *tp = tnapi->tp;
+drivers/net/ethernet/broadcom/tg3.c:7153:	if (tnapi->hw_status->idx[0].tx_consumer != tnapi->tx_cons) {
+drivers/net/ethernet/broadcom/tg3.c:7159:	if (!tnapi->rx_rcb_prod_idx)
+drivers/net/ethernet/broadcom/tg3.c:7166:	if (*(tnapi->rx_rcb_prod_idx) != tnapi->rx_rcb_ptr)
+drivers/net/ethernet/broadcom/tg3.c:7215:	struct tg3 *tp = tnapi->tp;
+drivers/net/ethernet/broadcom/tg3.c:7217:	struct tg3_hw_status *sblk = tnapi->hw_status;
+drivers/net/ethernet/broadcom/tg3.c:7232:		tnapi->last_tag = sblk->status_tag;
+drivers/net/ethernet/broadcom/tg3.c:7233:		tnapi->last_irq_tag = tnapi->last_tag;
+drivers/net/ethernet/broadcom/tg3.c:7237:		if (likely(sblk->idx[0].tx_consumer == tnapi->tx_cons &&
+drivers/net/ethernet/broadcom/tg3.c:7238:			   *(tnapi->rx_rcb_prod_idx) == tnapi->rx_rcb_ptr)) {
+drivers/net/ethernet/broadcom/tg3.c:7248:			tw32_mailbox(tnapi->int_mbox, tnapi->last_tag << 24);
+drivers/net/ethernet/broadcom/tg3.c:7256:						  tnapi->coal_now);
+drivers/net/ethernet/broadcom/tg3.c:7309:	struct tg3 *tp = tnapi->tp;
+drivers/net/ethernet/broadcom/tg3.c:7311:	struct tg3_hw_status *sblk = tnapi->hw_status;
+drivers/net/ethernet/broadcom/tg3.c:7332:			tnapi->last_tag = sblk->status_tag;
+drivers/net/ethernet/broadcom/tg3.c:7333:			tnapi->last_irq_tag = tnapi->last_tag;
+drivers/net/ethernet/broadcom/tg3.c:7456:	struct tg3 *tp = tnapi->tp;
+drivers/net/ethernet/broadcom/tg3.c:7458:	prefetch(tnapi->hw_status);
+drivers/net/ethernet/broadcom/tg3.c:7459:	if (tnapi->rx_rcb)
+drivers/net/ethernet/broadcom/tg3.c:7460:		prefetch(&tnapi->rx_rcb[tnapi->rx_rcb_ptr]);
+drivers/net/ethernet/broadcom/tg3.c:7463:		napi_schedule(&tnapi->napi);
+drivers/net/ethernet/broadcom/tg3.c:7475:	struct tg3 *tp = tnapi->tp;
+drivers/net/ethernet/broadcom/tg3.c:7477:	prefetch(tnapi->hw_status);
+drivers/net/ethernet/broadcom/tg3.c:7478:	if (tnapi->rx_rcb)
+drivers/net/ethernet/broadcom/tg3.c:7479:		prefetch(&tnapi->rx_rcb[tnapi->rx_rcb_ptr]);
+drivers/net/ethernet/broadcom/tg3.c:7487:	tw32_mailbox(tnapi->int_mbox, 0x00000001);
+drivers/net/ethernet/broadcom/tg3.c:7489:		napi_schedule(&tnapi->napi);
+drivers/net/ethernet/broadcom/tg3.c:7497:	struct tg3 *tp = tnapi->tp;
+drivers/net/ethernet/broadcom/tg3.c:7498:	struct tg3_hw_status *sblk = tnapi->hw_status;
+drivers/net/ethernet/broadcom/tg3.c:7530:		prefetch(&tnapi->rx_rcb[tnapi->rx_rcb_ptr]);
+drivers/net/ethernet/broadcom/tg3.c:7531:		napi_schedule(&tnapi->napi);
+drivers/net/ethernet/broadcom/tg3.c:7546:	struct tg3 *tp = tnapi->tp;
+drivers/net/ethernet/broadcom/tg3.c:7547:	struct tg3_hw_status *sblk = tnapi->hw_status;
+drivers/net/ethernet/broadcom/tg3.c:7555:	if (unlikely(sblk->status_tag == tnapi->last_irq_tag)) {
+drivers/net/ethernet/broadcom/tg3.c:7582:	tnapi->last_irq_tag = sblk->status_tag;
+drivers/net/ethernet/broadcom/tg3.c:7587:	prefetch(&tnapi->rx_rcb[tnapi->rx_rcb_ptr]);
+drivers/net/ethernet/broadcom/tg3.c:7589:	napi_schedule(&tnapi->napi);
+drivers/net/ethernet/broadcom/tg3.c:7599:	struct tg3 *tp = tnapi->tp;
+drivers/net/ethernet/broadcom/tg3.c:7600:	struct tg3_hw_status *sblk = tnapi->hw_status;
+drivers/net/ethernet/broadcom/tg3.c:7685:	struct tg3 *tp = tnapi->tp;
+drivers/net/ethernet/broadcom/tg3.c:7713:			tnapi->tx_buffers[*entry].fragmented = true;
+drivers/net/ethernet/broadcom/tg3.c:7715:			tg3_tx_set_bd(&tnapi->tx_ring[*entry], map,
+drivers/net/ethernet/broadcom/tg3.c:7726:				tg3_tx_set_bd(&tnapi->tx_ring[*entry], map,
+drivers/net/ethernet/broadcom/tg3.c:7732:				tnapi->tx_buffers[prvidx].fragmented = false;
+drivers/net/ethernet/broadcom/tg3.c:7736:		tg3_tx_set_bd(&tnapi->tx_ring[*entry], map,
+drivers/net/ethernet/broadcom/tg3.c:7748:	struct tg3_tx_ring_info *txb = &tnapi->tx_buffers[entry];
+drivers/net/ethernet/broadcom/tg3.c:7753:	pci_unmap_single(tnapi->tp->pdev,
+drivers/net/ethernet/broadcom/tg3.c:7761:		txb = &tnapi->tx_buffers[entry];
+drivers/net/ethernet/broadcom/tg3.c:7768:		txb = &tnapi->tx_buffers[entry];
+drivers/net/ethernet/broadcom/tg3.c:7770:		pci_unmap_page(tnapi->tp->pdev,
+drivers/net/ethernet/broadcom/tg3.c:7777:			txb = &tnapi->tx_buffers[entry];
+drivers/net/ethernet/broadcom/tg3.c:7788:	struct tg3 *tp = tnapi->tp;
+drivers/net/ethernet/broadcom/tg3.c:7818:			tnapi->tx_buffers[*entry].skb = new_skb;
+drivers/net/ethernet/broadcom/tg3.c:7819:			dma_unmap_addr_set(&tnapi->tx_buffers[*entry],
+drivers/net/ethernet/broadcom/tg3.c:7842:	return skb_shinfo(skb)->gso_segs < tnapi->tx_pending / 3;
+drivers/net/ethernet/broadcom/tg3.c:7929:	entry = tnapi->tx_prod;
+drivers/net/ethernet/broadcom/tg3.c:8041:	tnapi->tx_buffers[entry].skb = skb;
+drivers/net/ethernet/broadcom/tg3.c:8042:	dma_unmap_addr_set(&tnapi->tx_buffers[entry], mapping, mapping);
+drivers/net/ethernet/broadcom/tg3.c:8072:			tnapi->tx_buffers[entry].skb = NULL;
+drivers/net/ethernet/broadcom/tg3.c:8073:			dma_unmap_addr_set(&tnapi->tx_buffers[entry], mapping,
+drivers/net/ethernet/broadcom/tg3.c:8090:		tg3_tx_skb_unmap(tnapi, tnapi->tx_prod, i);
+drivers/net/ethernet/broadcom/tg3.c:8107:		entry = tnapi->tx_prod;
+drivers/net/ethernet/broadcom/tg3.c:8120:	tnapi->tx_prod = entry;
+drivers/net/ethernet/broadcom/tg3.c:8136:		tw32_tx_mbox(tnapi->prodmbox, entry);
+drivers/net/ethernet/broadcom/tg3.c:8143:	tg3_tx_skb_unmap(tnapi, tnapi->tx_prod, --i);
+drivers/net/ethernet/broadcom/tg3.c:8144:	tnapi->tx_buffers[tnapi->tx_prod].skb = NULL;
+drivers/net/ethernet/broadcom/tg3.c:8532:		tg3_rx_prodring_free(tp, &tnapi->prodring);
+drivers/net/ethernet/broadcom/tg3.c:8534:		if (!tnapi->tx_buffers)
+drivers/net/ethernet/broadcom/tg3.c:8538:			struct sk_buff *skb = tnapi->tx_buffers[i].skb;
+drivers/net/ethernet/broadcom/tg3.c:8569:		tnapi->last_tag = 0;
+drivers/net/ethernet/broadcom/tg3.c:8570:		tnapi->last_irq_tag = 0;
+drivers/net/ethernet/broadcom/tg3.c:8571:		tnapi->hw_status->status = 0;
+drivers/net/ethernet/broadcom/tg3.c:8572:		tnapi->hw_status->status_tag = 0;
+drivers/net/ethernet/broadcom/tg3.c:8573:		memset(tnapi->hw_status, 0, TG3_HW_STATUS_SIZE);
+drivers/net/ethernet/broadcom/tg3.c:8575:		tnapi->tx_prod = 0;
+drivers/net/ethernet/broadcom/tg3.c:8576:		tnapi->tx_cons = 0;
+drivers/net/ethernet/broadcom/tg3.c:8577:		if (tnapi->tx_ring)
+drivers/net/ethernet/broadcom/tg3.c:8578:			memset(tnapi->tx_ring, 0, TG3_TX_RING_BYTES);
+drivers/net/ethernet/broadcom/tg3.c:8580:		tnapi->rx_rcb_ptr = 0;
+drivers/net/ethernet/broadcom/tg3.c:8581:		if (tnapi->rx_rcb)
+drivers/net/ethernet/broadcom/tg3.c:8582:			memset(tnapi->rx_rcb, 0, TG3_RX_RCB_RING_BYTES(tp));
+drivers/net/ethernet/broadcom/tg3.c:8584:		if (tnapi->prodring.rx_std &&
+drivers/net/ethernet/broadcom/tg3.c:8585:		    tg3_rx_prodring_alloc(tp, &tnapi->prodring)) {
+drivers/net/ethernet/broadcom/tg3.c:8601:		if (tnapi->tx_ring) {
+drivers/net/ethernet/broadcom/tg3.c:8603:				tnapi->tx_ring, tnapi->tx_desc_mapping);
+drivers/net/ethernet/broadcom/tg3.c:8604:			tnapi->tx_ring = NULL;
+drivers/net/ethernet/broadcom/tg3.c:8607:		kfree(tnapi->tx_buffers);
+drivers/net/ethernet/broadcom/tg3.c:8608:		tnapi->tx_buffers = NULL;
+drivers/net/ethernet/broadcom/tg3.c:8624:		tnapi->tx_buffers = kzalloc(sizeof(struct tg3_tx_ring_info) *
+drivers/net/ethernet/broadcom/tg3.c:8626:		if (!tnapi->tx_buffers)
+drivers/net/ethernet/broadcom/tg3.c:8629:		tnapi->tx_ring = dma_alloc_coherent(&tp->pdev->dev,
+drivers/net/ethernet/broadcom/tg3.c:8631:						    &tnapi->tx_desc_mapping,
+drivers/net/ethernet/broadcom/tg3.c:8633:		if (!tnapi->tx_ring)
+drivers/net/ethernet/broadcom/tg3.c:8651:		tg3_rx_prodring_fini(tp, &tnapi->prodring);
+drivers/net/ethernet/broadcom/tg3.c:8653:		if (!tnapi->rx_rcb)
+drivers/net/ethernet/broadcom/tg3.c:8658:				  tnapi->rx_rcb,
+drivers/net/ethernet/broadcom/tg3.c:8659:				  tnapi->rx_rcb_mapping);
+drivers/net/ethernet/broadcom/tg3.c:8660:		tnapi->rx_rcb = NULL;
+drivers/net/ethernet/broadcom/tg3.c:8679:		if (tg3_rx_prodring_init(tp, &tnapi->prodring))
+drivers/net/ethernet/broadcom/tg3.c:8689:		tnapi->rx_rcb = dma_zalloc_coherent(&tp->pdev->dev,
+drivers/net/ethernet/broadcom/tg3.c:8691:						    &tnapi->rx_rcb_mapping,
+drivers/net/ethernet/broadcom/tg3.c:8693:		if (!tnapi->rx_rcb)
+drivers/net/ethernet/broadcom/tg3.c:8715:		if (tnapi->hw_status) {
+drivers/net/ethernet/broadcom/tg3.c:8717:					  tnapi->hw_status,
+drivers/net/ethernet/broadcom/tg3.c:8718:					  tnapi->status_mapping);
+drivers/net/ethernet/broadcom/tg3.c:8719:			tnapi->hw_status = NULL;
+drivers/net/ethernet/broadcom/tg3.c:8754:		tnapi->hw_status = dma_zalloc_coherent(&tp->pdev->dev,
+drivers/net/ethernet/broadcom/tg3.c:8756:						       &tnapi->status_mapping,
+drivers/net/ethernet/broadcom/tg3.c:8758:		if (!tnapi->hw_status)
+drivers/net/ethernet/broadcom/tg3.c:8761:		sblk = tnapi->hw_status;
+drivers/net/ethernet/broadcom/tg3.c:8786:			tnapi->rx_rcb_prod_idx = prodptr;
+drivers/net/ethernet/broadcom/tg3.c:8788:			tnapi->rx_rcb_prod_idx = &sblk->idx[0].rx_producer;
+drivers/net/ethernet/broadcom/tg3.c:8923:		if (tnapi->hw_status)
+drivers/net/ethernet/broadcom/tg3.c:8924:			memset(tnapi->hw_status, 0, TG3_HW_STATUS_SIZE);
+drivers/net/ethernet/broadcom/tg3.c:9090:		if (tnapi->hw_status) {
+drivers/net/ethernet/broadcom/tg3.c:9091:			tnapi->hw_status->status = 0;
+drivers/net/ethernet/broadcom/tg3.c:9092:			tnapi->hw_status->status_tag = 0;
+drivers/net/ethernet/broadcom/tg3.c:9094:		tnapi->last_tag = 0;
+drivers/net/ethernet/broadcom/tg3.c:9095:		tnapi->last_irq_tag = 0;
+drivers/net/ethernet/broadcom/tg3.c:9518:		if (!tnapi->tx_ring)
+drivers/net/ethernet/broadcom/tg3.c:9521:		tg3_set_bdinfo(tp, txrcb, tnapi->tx_desc_mapping,
+drivers/net/ethernet/broadcom/tg3.c:9562:		if (!tnapi->rx_rcb)
+drivers/net/ethernet/broadcom/tg3.c:9565:		tg3_set_bdinfo(tp, rxrcb, tnapi->rx_rcb_mapping,
+drivers/net/ethernet/broadcom/tg3.c:9618:	memset(tnapi->hw_status, 0, TG3_HW_STATUS_SIZE);
+drivers/net/ethernet/broadcom/tg3.c:9622:	     ((u64) tnapi->status_mapping >> 32));
+drivers/net/ethernet/broadcom/tg3.c:9624:	     ((u64) tnapi->status_mapping & 0xffffffff));
+drivers/net/ethernet/broadcom/tg3.c:9629:		u64 mapping = (u64)tnapi->status_mapping;
+drivers/net/ethernet/broadcom/tg3.c:9635:		memset(tnapi->hw_status, 0, TG3_HW_STATUS_SIZE);
+drivers/net/ethernet/broadcom/tg3.c:10919:			if (tnapi->last_rx_cons == tnapi->rx_rcb_ptr &&
+drivers/net/ethernet/broadcom/tg3.c:10920:			    tnapi->last_tx_cons == tnapi->tx_cons) {
+drivers/net/ethernet/broadcom/tg3.c:10921:				if (tnapi->chk_msi_cnt < 1) {
+drivers/net/ethernet/broadcom/tg3.c:10922:					tnapi->chk_msi_cnt++;
+drivers/net/ethernet/broadcom/tg3.c:10928:		tnapi->chk_msi_cnt = 0;
+drivers/net/ethernet/broadcom/tg3.c:10929:		tnapi->last_rx_cons = tnapi->rx_rcb_ptr;
+drivers/net/ethernet/broadcom/tg3.c:10930:		tnapi->last_tx_cons = tnapi->tx_cons;
+drivers/net/ethernet/broadcom/tg3.c:11188:		name = &tnapi->irq_lbl[0];
+drivers/net/ethernet/broadcom/tg3.c:11189:		if (tnapi->tx_buffers && tnapi->rx_rcb)
+drivers/net/ethernet/broadcom/tg3.c:11192:		else if (tnapi->tx_buffers)
+drivers/net/ethernet/broadcom/tg3.c:11195:		else if (tnapi->rx_rcb)
+drivers/net/ethernet/broadcom/tg3.c:11216:	return request_irq(tnapi->irq_vec, fn, flags, name, tnapi);
+drivers/net/ethernet/broadcom/tg3.c:11231:	free_irq(tnapi->irq_vec, tnapi);
+drivers/net/ethernet/broadcom/tg3.c:11242:	err = request_irq(tnapi->irq_vec, tg3_test_isr,
+drivers/net/ethernet/broadcom/tg3.c:11247:	tnapi->hw_status->status &= ~SD_STATUS_UPDATED;
+drivers/net/ethernet/broadcom/tg3.c:11251:	       tnapi->coal_now);
+drivers/net/ethernet/broadcom/tg3.c:11256:		int_mbox = tr32_mailbox(tnapi->int_mbox);
+drivers/net/ethernet/broadcom/tg3.c:11266:		    tnapi->hw_status->status_tag != tnapi->last_tag)
+drivers/net/ethernet/broadcom/tg3.c:11267:			tw32_mailbox_f(tnapi->int_mbox, tnapi->last_tag << 24);
+drivers/net/ethernet/broadcom/tg3.c:11274:	free_irq(tnapi->irq_vec, tnapi);
+drivers/net/ethernet/broadcom/tg3.c:11542:				free_irq(tnapi->irq_vec, tnapi);
+drivers/net/ethernet/broadcom/tg3.c:11612:		free_irq(tnapi->irq_vec, tnapi);
+drivers/net/ethernet/broadcom/tg3.c:11651:		free_irq(tnapi->irq_vec, tnapi);
+drivers/net/ethernet/broadcom/tg3.c:13398:	coal_now = tnapi->coal_now | rnapi->coal_now;
+drivers/net/ethernet/broadcom/tg3.c:13475:	val = tnapi->tx_prod;
+drivers/net/ethernet/broadcom/tg3.c:13476:	tnapi->tx_buffers[val].skb = skb;
+drivers/net/ethernet/broadcom/tg3.c:13477:	dma_unmap_addr_set(&tnapi->tx_buffers[val], mapping, map);
+drivers/net/ethernet/broadcom/tg3.c:13480:	       rnapi->coal_now);
+drivers/net/ethernet/broadcom/tg3.c:13484:	rx_start_idx = rnapi->hw_status->idx[0].rx_producer;
+drivers/net/ethernet/broadcom/tg3.c:13489:		tnapi->tx_buffers[val].skb = NULL;
+drivers/net/ethernet/broadcom/tg3.c:13494:	tnapi->tx_prod++;
+drivers/net/ethernet/broadcom/tg3.c:13499:	tw32_tx_mbox(tnapi->prodmbox, tnapi->tx_prod);
+drivers/net/ethernet/broadcom/tg3.c:13500:	tr32_mailbox(tnapi->prodmbox);
+drivers/net/ethernet/broadcom/tg3.c:13511:		tx_idx = tnapi->hw_status->idx[0].tx_consumer;
+drivers/net/ethernet/broadcom/tg3.c:13512:		rx_idx = rnapi->hw_status->idx[0].rx_producer;
+drivers/net/ethernet/broadcom/tg3.c:13513:		if ((tx_idx == tnapi->tx_prod) &&
+drivers/net/ethernet/broadcom/tg3.c:13518:	tg3_tx_skb_unmap(tnapi, tnapi->tx_prod - 1, -1);
+drivers/net/ethernet/broadcom/tg3.c:13521:	if (tx_idx != tnapi->tx_prod)
+drivers/net/ethernet/broadcom/tg3.c:13529:		desc = &rnapi->rx_rcb[rx_start_idx++];
+drivers/net/ethernet/broadcom/tg3.c:17828:		tnapi->tp = tp;
+drivers/net/ethernet/broadcom/tg3.c:17829:		tnapi->tx_pending = TG3_DEF_TX_RING_PENDING;
+drivers/net/ethernet/broadcom/tg3.c:17831:		tnapi->int_mbox = intmbx;
+drivers/net/ethernet/broadcom/tg3.c:17837:		tnapi->consmbox = rcvmbx;
+drivers/net/ethernet/broadcom/tg3.c:17838:		tnapi->prodmbox = sndmbx;
+drivers/net/ethernet/broadcom/tg3.c:17841:			tnapi->coal_now = HOSTCC_MODE_COAL_VEC1_NOW << (i - 1);
+drivers/net/ethernet/broadcom/tg3.c:17843:			tnapi->coal_now = HOSTCC_MODE_NOW;
+drivers/net/ethernet/broadcom/bnx2.c:362:		bnapi->cnic_present = 0;
+drivers/net/ethernet/broadcom/bnx2.c:367:		bnapi->cnic_tag = bnapi->last_status_idx;
+drivers/net/ethernet/broadcom/bnx2.c:368:		bnapi->cnic_present = 1;
+drivers/net/ethernet/broadcom/bnx2.c:375:		((unsigned long) bnapi->status_blk.msi +
+drivers/net/ethernet/broadcom/bnx2.c:415:	bnapi->cnic_present = 0;
+drivers/net/ethernet/broadcom/bnx2.c:470:			bnapi->cnic_tag = bnapi->last_status_idx;
+drivers/net/ethernet/broadcom/bnx2.c:606:		BNX2_WR(bp, BNX2_PCICFG_INT_ACK_CMD, bnapi->int_num |
+drivers/net/ethernet/broadcom/bnx2.c:621:		BNX2_WR(bp, BNX2_PCICFG_INT_ACK_CMD, bnapi->int_num |
+drivers/net/ethernet/broadcom/bnx2.c:624:			bnapi->last_status_idx);
+drivers/net/ethernet/broadcom/bnx2.c:626:		BNX2_WR(bp, BNX2_PCICFG_INT_ACK_CMD, bnapi->int_num |
+drivers/net/ethernet/broadcom/bnx2.c:628:			bnapi->last_status_idx);
+drivers/net/ethernet/broadcom/bnx2.c:703:		struct bnx2_tx_ring_info *txr = &bnapi->tx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:723:		struct bnx2_rx_ring_info *rxr = &bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:755:		struct bnx2_tx_ring_info *txr = &bnapi->tx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:777:		struct bnx2_rx_ring_info *rxr = &bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:876:	if (bnapi->status_blk.msi)
+drivers/net/ethernet/broadcom/bnx2.c:877:		bnapi->status_blk.msi = NULL;
+drivers/net/ethernet/broadcom/bnx2.c:887:	bnapi->status_blk.msi = bp->status_blk;
+drivers/net/ethernet/broadcom/bnx2.c:888:	bnapi->hw_tx_cons_ptr =
+drivers/net/ethernet/broadcom/bnx2.c:889:		&bnapi->status_blk.msi->status_tx_quick_consumer_index0;
+drivers/net/ethernet/broadcom/bnx2.c:890:	bnapi->hw_rx_cons_ptr =
+drivers/net/ethernet/broadcom/bnx2.c:891:		&bnapi->status_blk.msi->status_rx_quick_consumer_index0;
+drivers/net/ethernet/broadcom/bnx2.c:899:			bnapi->status_blk.msix = sblk;
+drivers/net/ethernet/broadcom/bnx2.c:900:			bnapi->hw_tx_cons_ptr =
+drivers/net/ethernet/broadcom/bnx2.c:902:			bnapi->hw_rx_cons_ptr =
+drivers/net/ethernet/broadcom/bnx2.c:904:			bnapi->int_num = i << 24;
+drivers/net/ethernet/broadcom/bnx2.c:2803:	struct status_block *sblk = bnapi->status_blk.msi;
+drivers/net/ethernet/broadcom/bnx2.c:2839:	cons = READ_ONCE(*bnapi->hw_tx_cons_ptr);
+drivers/net/ethernet/broadcom/bnx2.c:2849:	struct bnx2_tx_ring_info *txr = &bnapi->tx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:3139:	cons = READ_ONCE(*bnapi->hw_rx_cons_ptr);
+drivers/net/ethernet/broadcom/bnx2.c:3149:	struct bnx2_rx_ring_info *rxr = &bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:3281:		napi_gro_receive(&bnapi->napi, skb);
+drivers/net/ethernet/broadcom/bnx2.c:3320:	struct bnx2 *bp = bnapi->bp;
+drivers/net/ethernet/broadcom/bnx2.c:3322:	prefetch(bnapi->status_blk.msi);
+drivers/net/ethernet/broadcom/bnx2.c:3331:	napi_schedule(&bnapi->napi);
+drivers/net/ethernet/broadcom/bnx2.c:3340:	struct bnx2 *bp = bnapi->bp;
+drivers/net/ethernet/broadcom/bnx2.c:3342:	prefetch(bnapi->status_blk.msi);
+drivers/net/ethernet/broadcom/bnx2.c:3348:	napi_schedule(&bnapi->napi);
+drivers/net/ethernet/broadcom/bnx2.c:3357:	struct bnx2 *bp = bnapi->bp;
+drivers/net/ethernet/broadcom/bnx2.c:3358:	struct status_block *sblk = bnapi->status_blk.msi;
+drivers/net/ethernet/broadcom/bnx2.c:3366:	if ((sblk->status_idx == bnapi->last_status_idx) &&
+drivers/net/ethernet/broadcom/bnx2.c:3384:	if (napi_schedule_prep(&bnapi->napi)) {
+drivers/net/ethernet/broadcom/bnx2.c:3385:		bnapi->last_status_idx = sblk->status_idx;
+drivers/net/ethernet/broadcom/bnx2.c:3386:		__napi_schedule(&bnapi->napi);
+drivers/net/ethernet/broadcom/bnx2.c:3395:	struct bnx2_tx_ring_info *txr = &bnapi->tx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:3396:	struct bnx2_rx_ring_info *rxr = &bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:3410:	struct status_block *sblk = bnapi->status_blk.msi;
+drivers/net/ethernet/broadcom/bnx2.c:3416:	if (bnapi->cnic_present && (bnapi->cnic_tag != sblk->status_idx))
+drivers/net/ethernet/broadcom/bnx2.c:3438:		if (bnapi->last_status_idx == bp->idle_chk_status_idx) {
+drivers/net/ethernet/broadcom/bnx2.c:3446:	bp->idle_chk_status_idx = bnapi->last_status_idx;
+drivers/net/ethernet/broadcom/bnx2.c:3454:	if (!bnapi->cnic_present)
+drivers/net/ethernet/broadcom/bnx2.c:3460:		bnapi->cnic_tag = c_ops->cnic_handler(bp->cnic_data,
+drivers/net/ethernet/broadcom/bnx2.c:3461:						      bnapi->status_blk.msi);
+drivers/net/ethernet/broadcom/bnx2.c:3468:	struct status_block *sblk = bnapi->status_blk.msi;
+drivers/net/ethernet/broadcom/bnx2.c:3489:	struct bnx2_tx_ring_info *txr = &bnapi->tx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:3490:	struct bnx2_rx_ring_info *rxr = &bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:3504:	struct bnx2 *bp = bnapi->bp;
+drivers/net/ethernet/broadcom/bnx2.c:3506:	struct status_block_msix *sblk = bnapi->status_blk.msix;
+drivers/net/ethernet/broadcom/bnx2.c:3513:		bnapi->last_status_idx = sblk->status_idx;
+drivers/net/ethernet/broadcom/bnx2.c:3519:			BNX2_WR(bp, BNX2_PCICFG_INT_ACK_CMD, bnapi->int_num |
+drivers/net/ethernet/broadcom/bnx2.c:3521:				bnapi->last_status_idx);
+drivers/net/ethernet/broadcom/bnx2.c:3531:	struct bnx2 *bp = bnapi->bp;
+drivers/net/ethernet/broadcom/bnx2.c:3533:	struct status_block *sblk = bnapi->status_blk.msi;
+drivers/net/ethernet/broadcom/bnx2.c:3544:		/* bnapi->last_status_idx is used below to tell the hw how
+drivers/net/ethernet/broadcom/bnx2.c:3548:		bnapi->last_status_idx = sblk->status_idx;
+drivers/net/ethernet/broadcom/bnx2.c:3559:					bnapi->last_status_idx);
+drivers/net/ethernet/broadcom/bnx2.c:3565:				bnapi->last_status_idx);
+drivers/net/ethernet/broadcom/bnx2.c:3569:				bnapi->last_status_idx);
+drivers/net/ethernet/broadcom/bnx2.c:5141:		txr = &bnapi->tx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:5142:		rxr = &bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:5193:	txr = &bnapi->tx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:5247:	struct bnx2_rx_ring_info *rxr = &bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:5440:		struct bnx2_tx_ring_info *txr = &bnapi->tx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:5485:		struct bnx2_rx_ring_info *rxr = &bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:5821:	struct bnx2_tx_ring_info *txr = &bnapi->tx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:5822:	struct bnx2_rx_ring_info *rxr = &bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:5826:	txr = &tx_napi->tx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:5827:	rxr = &bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:6612:	txr = &bnapi->tx_ring;
+drivers/net/ethernet/broadcom/bnx2.c:8544:		bnapi->bp = bp;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:549:	struct bnxt_tx_ring_info *txr = bnapi->tx_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:774:	struct bnxt *bp = bnapi->bp;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:775:	struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:776:	struct bnxt_rx_ring_info *rxr = bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:849:	skb = napi_alloc_skb(&rxr->bnapi->napi, payload);
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:903:	struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:904:	struct bnxt_rx_ring_info *rxr = bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:986:	struct bnxt *bp = bnapi->bp;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:990:	skb = napi_alloc_skb(&bnapi->napi, len);
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1010:	struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1055:	if (!rxr->bnapi->in_reset) {
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1056:		rxr->bnapi->in_reset = true;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1340:	struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1341:	struct bnxt_rx_ring_info *rxr = bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1351:	if (unlikely(bnapi->in_reset)) {
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1463:	skb_record_rx_queue(skb, bnapi->index);
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1464:	napi_gro_receive(&bnapi->napi, skb);
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1477:	struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1478:	struct bnxt_rx_ring_info *rxr = bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1659:	struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1797:	struct bnxt *bp = bnapi->bp;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1798:	struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1802:	napi_schedule(&bnapi->napi);
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1820:	struct bnxt *bp = bnapi->bp;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1821:	struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1841:	napi_schedule(&bnapi->napi);
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1847:	struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1905:		struct bnxt_tx_ring_info *txr = bnapi->tx_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1923:		bnapi->tx_int(bp, bnapi, tx_pkts);
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1926:		struct bnxt_rx_ring_info *rxr = bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1939:	struct bnxt *bp = bnapi->bp;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1940:	struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:1941:	struct bnxt_rx_ring_info *rxr = bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:2007:	struct bnxt *bp = bnapi->bp;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:2008:	struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:2407:		cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:2426:		cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:2450:		cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:2458:		rxr = bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:2479:		txr = bnapi->tx_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:3043:		struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:3062:		struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:3109:		cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:3112:		txr = bnapi->tx_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:3118:		rxr = bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:3318:		struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:3344:		struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:4004:	grp_idx = bp->rx_ring[ring].bnapi->index;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:4063:		grp_idx = bp->rx_ring[i].bnapi->index;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:4119:		unsigned int grp_idx = bp->rx_ring[i].bnapi->index;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:4285:		struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:4306:		u32 map_idx = txr->bnapi->index;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:4319:		u32 map_idx = rxr->bnapi->index;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:4335:			u32 grp_idx = rxr->bnapi->index;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:4405:		u32 grp_idx = txr->bnapi->index;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:4420:		u32 grp_idx = rxr->bnapi->index;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:4437:		u32 grp_idx = rxr->bnapi->index;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:4459:		struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:4601:		if (!bnapi->rx_ring)
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:4630:		struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:4663:		struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:5654:		napi_hash_del(&bnapi->napi);
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:5655:		netif_napi_del(&bnapi->napi);
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:5674:			netif_napi_add(bp->dev, &bnapi->napi,
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:5679:			netif_napi_add(bp->dev, &bnapi->napi,
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:5684:		netif_napi_add(bp->dev, &bnapi->napi, bnxt_poll, 64);
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:6545:		struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:6876:	struct bnxt_tx_ring_info *txr = bnapi->tx_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:6877:	int i = bnapi->index;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:6882:	netdev_info(bnapi->bp->dev, "[%d]: tx{fw_ring: %d prod: %x cons: %x}\n",
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:6889:	struct bnxt_rx_ring_info *rxr = bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:6890:	int i = bnapi->index;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:6895:	netdev_info(bnapi->bp->dev, "[%d]: rx{fw_ring: %d prod: %x} rx_agg{fw_ring: %d agg_prod: %x sw_agg_prod: %x}\n",
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:6903:	struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:6904:	int i = bnapi->index;
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:6906:	netdev_info(bnapi->bp->dev, "[%d]: cp{fw_ring: %d raw_cons: %x}\n",
+drivers/net/ethernet/broadcom/bnxt/bnxt.c:6960:		napi_schedule(&txr->bnapi->napi);
+drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c:47:	struct bnxt_tx_ring_info *txr = bnapi->tx_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c:48:	struct bnxt_rx_ring_info *rxr = bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c:91:	txr = rxr->bnapi->tx_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c:249:		struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c:2293:	struct bnxt_cp_ring_info *cpr = &bnapi->cp_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c:2294:	struct bnxt_rx_ring_info *rxr = bnapi->rx_ring;
+drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c:2312:	if (!ether_addr_equal(data + i, bnapi->bp->dev->dev_addr))
+drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c:2332:	cpr = &bnapi->cp_ring;
+drivers/net/ethernet/ezchip/nps_enet.c:187:	struct net_device *ndev = napi->dev;
+drivers/net/virtio_net.c:277:	if (napi->weight)
+drivers/net/virtio_net.c:1074:	if (!napi->weight)
+drivers/net/virtio_net.c:1081:		napi->weight = 0;
+drivers/net/virtio_net.c:1090:	if (napi->weight)
+drivers/net/fjes/fjes_main.c:1124:	struct net_device *netdev = napi->dev;
+drivers/net/caif/caif_virtio.c:632:	debugfs_create_u32("rx-napi-complete", S_IRUSR, cfv->debugfs,
+drivers/net/caif/caif_virtio.c:634:	debugfs_create_u32("rx-napi-resched", S_IRUSR, cfv->debugfs,
+drivers/crypto/caam/qi.c:768:		struct napi_struct *irqtask = &caam_napi->irqtask;
+net/core/dev.c:894:	return napi ? napi->dev : NULL;
+net/core/dev.c:3551:	list_add_tail(&napi->poll_list, &sd->poll_list);
+net/core/dev.c:4709:/* napi->gro_list contains packets ordered by age.
+net/core/dev.c:4718:	for (skb = napi->gro_list; skb != NULL; skb = skb->next) {
+net/core/dev.c:4731:		napi->gro_count--;
+net/core/dev.c:4734:	napi->gro_list = NULL;
+net/core/dev.c:4744:	for (p = napi->gro_list; p; p = p->next) {
+net/core/dev.c:4856:		pp = ptype->callbacks.gro_receive(&napi->gro_list, skb);
+net/core/dev.c:4878:		napi->gro_count--;
+net/core/dev.c:4887:	if (unlikely(napi->gro_count >= MAX_GRO_SKBS)) {
+net/core/dev.c:4888:		struct sk_buff *nskb = napi->gro_list;
+net/core/dev.c:4899:		napi->gro_count++;
+net/core/dev.c:4905:	skb->next = napi->gro_list;
+net/core/dev.c:4906:	napi->gro_list = skb;
+net/core/dev.c:5005:	skb->dev = napi->dev;
+net/core/dev.c:5012:	napi->skb = skb;
+net/core/dev.c:5017:	struct sk_buff *skb = napi->skb;
+net/core/dev.c:5022:			napi->skb = skb;
+net/core/dev.c:5068:	struct sk_buff *skb = napi->skb;
+net/core/dev.c:5072:	napi->skb = NULL;
+net/core/dev.c:5082:					     __func__, napi->dev->name);
+net/core/dev.c:5198:	napi->weight = dev_rx_weight;
+net/core/dev.c:5223:			napi->state = 0;
+net/core/dev.c:5339:		 * because we will call napi->poll() one more time.
+net/core/dev.c:5362:		if (napi->napi_id == napi_id)
+net/core/dev.c:5379:	 * Since we are about to call napi->poll() once more, we can safely
+net/core/dev.c:5385:	clear_bit(NAPI_STATE_MISSED, &napi->state);
+net/core/dev.c:5386:	clear_bit(NAPI_STATE_IN_BUSY_POLL, &napi->state);
+net/core/dev.c:5393:	rc = napi->poll(napi, BUSY_POLL_BUDGET);
+net/core/dev.c:5425:			unsigned long val = READ_ONCE(napi->state);
+net/core/dev.c:5428:			 * we avoid dirtying napi->state as much as we can.
+net/core/dev.c:5433:			if (cmpxchg(&napi->state, val,
+net/core/dev.c:5438:			napi_poll = napi->poll;
+net/core/dev.c:5444:			__NET_ADD_STATS(dev_net(napi->dev),
+net/core/dev.c:5475:	if (test_bit(NAPI_STATE_NO_BUSY_POLL, &napi->state) ||
+net/core/dev.c:5476:	    test_and_set_bit(NAPI_STATE_HASHED, &napi->state))
+net/core/dev.c:5486:	napi->napi_id = napi_gen_id;
+net/core/dev.c:5488:	hlist_add_head_rcu(&napi->napi_hash_node,
+net/core/dev.c:5489:			   &napi_hash[napi->napi_id % HASH_SIZE(napi_hash)]);
+net/core/dev.c:5503:	if (test_and_clear_bit(NAPI_STATE_HASHED, &napi->state)) {
+net/core/dev.c:5505:		hlist_del_rcu(&napi->napi_hash_node);
+net/core/dev.c:5521:	if (napi->gro_list && !napi_disable_pending(napi) &&
+net/core/dev.c:5522:	    !test_and_set_bit(NAPI_STATE_SCHED, &napi->state))
+net/core/dev.c:5531:	INIT_LIST_HEAD(&napi->poll_list);
+net/core/dev.c:5532:	hrtimer_init(&napi->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_PINNED);
+net/core/dev.c:5533:	napi->timer.function = napi_watchdog;
+net/core/dev.c:5534:	napi->gro_count = 0;
+net/core/dev.c:5535:	napi->gro_list = NULL;
+net/core/dev.c:5536:	napi->skb = NULL;
+net/core/dev.c:5537:	napi->poll = poll;
+net/core/dev.c:5541:	napi->weight = weight;
+net/core/dev.c:5542:	list_add(&napi->dev_list, &dev->napi_list);
+net/core/dev.c:5543:	napi->dev = dev;
+net/core/dev.c:5545:	napi->poll_owner = -1;
+net/core/dev.c:5547:	set_bit(NAPI_STATE_SCHED, &napi->state);
+net/core/dev.c:5574:	list_del_init(&napi->dev_list);
+net/core/dev.c:5577:	kfree_skb_list(napi->gro_list);
+net/core/dev.c:5578:	napi->gro_list = NULL;
+net/core/dev.c:5579:	napi->gro_count = 0;
+net/core/dev.c:8472:		list_del_init(&napi->poll_list);
+net/core/dev.c:8473:		if (napi->poll == process_backlog)
+net/core/dev.c:8474:			napi->state = 0;
+net/core/netpoll.c:155:	 * holding the napi->poll_lock.
+net/core/netpoll.c:157:	if (!test_bit(NAPI_STATE_SCHED, &napi->state))
+net/core/netpoll.c:164:	if (test_and_set_bit(NAPI_STATE_NPSVC, &napi->state))
+net/core/netpoll.c:170:	work = napi->poll(napi, 0);
+net/core/netpoll.c:171:	WARN_ONCE(work, "%pF exceeded budget in poll\n", napi->poll);
+net/core/netpoll.c:174:	clear_bit(NAPI_STATE_NPSVC, &napi->state);
+net/core/netpoll.c:183:		if (cmpxchg(&napi->poll_owner, -1, cpu) == -1) {
+net/core/netpoll.c:185:			smp_store_release(&napi->poll_owner, -1);
+net/core/netpoll.c:322:		if (napi->poll_owner == smp_processor_id())
+net/core/skbuff.c:495:	skb->dev = napi->dev;
+net/core/drop_monitor.c:214:	if (!napi->dev)
+net/core/drop_monitor.c:225:		if ((new_stat->dev == napi->dev)  &&
+net/core/drop_monitor.c:227:		    (napi->dev->stats.rx_dropped != new_stat->last_drop_val)) {
+net/core/drop_monitor.c:229:			new_stat->last_drop_val = napi->dev->stats.rx_dropped;
+kernel/bpf/devmap.c:216: * from the driver before returning from its napi->poll() routine. The poll()
+kernel/bpf/cpumap.c:647:	 * operation, when completing napi->poll call.
+kernel/bpf/cpumap.c:683:	/* The napi->poll softirq makes sure __cpu_map_insert_ctx()
