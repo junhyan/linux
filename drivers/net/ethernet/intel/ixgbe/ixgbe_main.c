@@ -10250,7 +10250,7 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	struct ixgbe_hw *hw;
 	const struct ixgbe_info *ii = ixgbe_info_tbl[ent->driver_data];//通过硬件的信息来确定需要初始化那个驱动,针对不同设备调用不同的操作
 	int i, err, pci_using_dac, expected_gts;
-	unsigned int indices = MAX_TX_QUEUES;
+	unsigned int indices = MAX_TX_QUEUES;//64
 	u8 part_str[IXGBE_PBANUM_LENGTH];
 	bool disable_dev = false;
 #ifdef IXGBE_FCOE
@@ -10303,14 +10303,15 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 		indices = IXGBE_MAX_RSS_INDICES;
 #endif
 	}
+//Allocates a struct net_device with private data area for driver use and performs basic initialization.  Also allocates subqueue structs for each queue on the device.
 
-	netdev = alloc_etherdev_mq(sizeof(struct ixgbe_adapter), indices);
-	if (!netdev) {
+	netdev = alloc_etherdev_mq(sizeof(struct ixgbe_adapter), indices);// indices max tx queue
+    if (!netdev) {
 		err = -ENOMEM;
 		goto err_alloc_etherdev;
 	}
 
-	SET_NETDEV_DEV(netdev, &pdev->dev);
+	SET_NETDEV_DEV(netdev, &pdev->dev);//(netdev)->dev.parent = (pdev) the device to which it is attached
 
 	adapter = netdev_priv(netdev);
 
