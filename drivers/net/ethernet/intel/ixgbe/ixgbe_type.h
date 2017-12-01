@@ -3520,8 +3520,8 @@ struct ixgbe_eeprom_info {
 struct ixgbe_mac_info {
 	struct ixgbe_mac_operations     ops;
 	enum ixgbe_mac_type             type;
-	u8                              addr[ETH_ALEN];
-	u8                              perm_addr[ETH_ALEN];
+	u8                              addr[ETH_ALEN];//current value of the ports MAC addres.
+	u8                              perm_addr[ETH_ALEN];//initial value of the ports MAC address.
 	u8                              san_addr[ETH_ALEN];
 	/* prefix for World Wide Node Name (WWNN) */
 	u16                             wwnn_prefix;
@@ -3633,7 +3633,7 @@ struct ixgbe_info {
 	const struct ixgbe_mac_operations	*mac_ops; //a mac operations class with mac management function pointer
 	const struct ixgbe_eeprom_operations	*eeprom_ops;//Electrically Erasable Programmable read only memory) related operation
 	const struct ixgbe_phy_operations	*phy_ops;//operation about physical card
-	const struct ixgbe_mbx_operations	*mbx_ops;//operation about motherboard 
+	const struct ixgbe_mbx_operations	*mbx_ops;//operation about mailbox, used by sriov
 	const struct ixgbe_link_operations	*link_ops;////operation about the link for ixgbe
 	const u32			*mvals;
 };

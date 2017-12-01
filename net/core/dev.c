@@ -7538,7 +7538,7 @@ static void netdev_init_one_queue(struct net_device *dev,
 	netdev_queue_numa_node_write(queue, NUMA_NO_NODE); //define the queue to numa no node -1
 	queue->dev = dev;
 #ifdef CONFIG_BQL
-	dql_init(&queue->dql, HZ);
+	dql_init(&queue->dql, HZ);//dynamic_queue_limits
 #endif
 }
 
@@ -7549,7 +7549,7 @@ static void netif_free_tx_queues(struct net_device *dev)
 
 static int netif_alloc_netdev_queues(struct net_device *dev)
 {
-	unsigned int count = dev->num_tx_queues; //tx ring num
+	unsigned int count = dev->num_tx_queues; //tx ring num ixgbe 64
 	struct netdev_queue *tx;
 	size_t sz = count * sizeof(*tx);
 
@@ -8103,12 +8103,12 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
 	/* ensure 32-byte alignment of whole construct */
 	alloc_size += NETDEV_ALIGN - 1;
 
-	p = kvzalloc(alloc_size, GFP_KERNEL | __GFP_RETRY_MAYFAIL); // struct net_device
+	p = kvzalloc(alloc_size, GFP_KERNEL | __GFP_RETRY_MAYFAIL); // struct net_device+struct adapter
 	if (!p)
 		return NULL;
 
 	dev = PTR_ALIGN(p, NETDEV_ALIGN);
-	dev->padded = (char *)dev - (char *)p;//pad caused by align
+	dev->padded = (char *)dev - (char *)p;//pad caused by align???
 
 	dev->pcpu_refcnt = alloc_percpu(int); //Number of references to this device prrcpu???
 	if (!dev->pcpu_refcnt)
@@ -8117,7 +8117,7 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
 	if (dev_addr_init(dev))
 		goto free_pcpu;
 
-	dev_mc_init(dev);//Init multicast address list
+	dev_mc_init(dev);//Init multicast address list the list is only it's self
 	dev_uc_init(dev);//Init unicast address list
 
 	dev_net_set(dev, &init_net);//Network namespace this network device is inside 

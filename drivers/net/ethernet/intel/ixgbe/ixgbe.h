@@ -631,7 +631,7 @@ struct ixgbe_adapter {
 #define IXGBE_FLAG2_RX_LEGACY			BIT(16)
 
 	/* Tx fast path data */
-	int num_tx_queues; //tx queue count
+	int num_tx_queues;
 	u16 tx_itr_setting;
 	u16 tx_work_limit; //???
 

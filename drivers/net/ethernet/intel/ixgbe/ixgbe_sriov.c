@@ -178,7 +178,7 @@ void ixgbe_enable_sriov(struct ixgbe_adapter *adapter, unsigned int max_vfs)
 	int pre_existing_vfs = 0;
 	unsigned int num_vfs;
 
-	pre_existing_vfs = pci_num_vf(adapter->pdev);
+	pre_existing_vfs = pci_num_vf(adapter->pdev);//return dev->sriov->num_VFs;
 	if (!pre_existing_vfs && !max_vfs)
 		return;
 

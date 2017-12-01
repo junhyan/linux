@@ -4777,13 +4777,13 @@ static void ixgbe_mac_set_default_filter(struct ixgbe_adapter *adapter)
 	struct ixgbe_mac_addr *mac_table = &adapter->mac_table[0];
 	struct ixgbe_hw *hw = &adapter->hw;
 
-	memcpy(&mac_table->addr, hw->mac.addr, ETH_ALEN);
+	memcpy(&mac_table->addr, hw->mac.addr, ETH_ALEN);//copy hw mac addr to mac table[0] addr
 	mac_table->pool = VMDQ_P(0);
 
 	mac_table->state = IXGBE_MAC_STATE_DEFAULT | IXGBE_MAC_STATE_IN_USE;
 
 	hw->mac.ops.set_rar(hw, 0, mac_table->addr, mac_table->pool,
-			    IXGBE_RAH_AV);
+			    IXGBE_RAH_AV);// 82599 &ixgbe_set_rar_generic, write addr to the ral raha ???need understart the algorizm
 }
 
 int ixgbe_add_mac_filter(struct ixgbe_adapter *adapter,
@@ -6135,33 +6135,33 @@ static int ixgbe_sw_init(struct ixgbe_adapter *adapter,
 
 	/* PCI config space info */
 
-	hw->vendor_id = pdev->vendor;
+	hw->vendor_id = pdev->vendor; 
 	hw->device_id = pdev->device;
 	hw->revision_id = pdev->revision;
 	hw->subsystem_vendor_id = pdev->subsystem_vendor;
 	hw->subsystem_device_id = pdev->subsystem_device;
 
 	/* get_invariants needs the device IDs */
-	ii->get_invariants(hw);
+	ii->get_invariants(hw);//some invariants info
 
 	/* Set common capability flags and settings */
-	rss = min_t(int, ixgbe_max_rss_indices(adapter), num_online_cpus());
-	adapter->ring_feature[RING_F_RSS].limit = rss;
+	rss = min_t(int, ixgbe_max_rss_indices(adapter), num_online_cpus());//get the min one from nic rss and online cpu core for 82599 IXGBE_MAX_RSS_INDICES is 16 
+	adapter->ring_feature[RING_F_RSS].limit = rss; //ring_feature rss, this value will be used to alloc q_vector if the feather used is rss
 	adapter->flags2 |= IXGBE_FLAG2_RSC_CAPABLE;
 	adapter->max_q_vectors = MAX_Q_VECTORS_82599;
 	adapter->atr_sample_rate = 20;
 	fdir = min_t(int, IXGBE_MAX_FDIR_INDICES, num_online_cpus());
-	adapter->ring_feature[RING_F_FDIR].limit = fdir;
+	adapter->ring_feature[RING_F_FDIR].limit = fdir;//flow director ring feature
 	adapter->fdir_pballoc = IXGBE_FDIR_PBALLOC_64K;
 #ifdef CONFIG_IXGBE_DCA
-	adapter->flags |= IXGBE_FLAG_DCA_CAPABLE;
+	adapter->flags |= IXGBE_FLAG_DCA_CAPABLE;//Direct Cache Access
 #endif
 #ifdef CONFIG_IXGBE_DCB
-	adapter->flags |= IXGBE_FLAG_DCB_CAPABLE;
-	adapter->flags &= ~IXGBE_FLAG_DCB_ENABLED;
+	adapter->flags |= IXGBE_FLAG_DCB_CAPABLE;//Data Center Bridging
+	adapter->flags &= ~IXGBE_FLAG_DCB_ENABLED;//but not enable the dcb capabele
 #endif
 #ifdef IXGBE_FCOE
-	adapter->flags |= IXGBE_FLAG_FCOE_CAPABLE;
+	adapter->flags |= IXGBE_FLAG_FCOE_CAPABLE;//Fiber Channel over Ethernet 光纤通道(Fibre Channel）
 	adapter->flags &= ~IXGBE_FLAG_FCOE_ENABLED;
 #ifdef CONFIG_IXGBE_DCB
 	/* Default traffic class to use for FCoE */
@@ -6179,8 +6179,8 @@ static int ixgbe_sw_init(struct ixgbe_adapter *adapter,
 	for (i = 1; i < IXGBE_MAX_LINK_HANDLE; i++)
 		adapter->jump_tables[i] = NULL;
 
-	adapter->mac_table = kzalloc(sizeof(struct ixgbe_mac_addr) *
-				     hw->mac.num_rar_entries,
+	adapter->mac_table = kzalloc(sizeof(struct ixgbe_mac_addr) * //alloc mac table
+				     hw->mac.num_rar_entries,//Receive Address register num_rar_entries when assign the value
 				     GFP_ATOMIC);
 	if (!adapter->mac_table)
 		return -ENOMEM;
@@ -6189,7 +6189,7 @@ static int ixgbe_sw_init(struct ixgbe_adapter *adapter,
 		return -ENOMEM;
 
 	/* Set MAC specific capability flags and exceptions */
-	switch (hw->mac.type) {
+	switch (hw->mac.type) { //base on the nic type to add or remove the capable on the adapter
 	case ixgbe_mac_82598EB:
 		adapter->flags2 &= ~IXGBE_FLAG2_RSC_CAPABLE;
 
@@ -6264,7 +6264,7 @@ static int ixgbe_sw_init(struct ixgbe_adapter *adapter,
 #endif
 
 	/* default flow control settings */
-	hw->fc.requested_mode = ixgbe_fc_full;
+	hw->fc.requested_mode = ixgbe_fc_full;//Flow control is implemented to reduce receive buffer overflows, which result in the dropping of received packets. Flow control also allows for local controlling of network congestion levels.
 	hw->fc.current_mode = ixgbe_fc_full;	/* init for ethtool output */
 	ixgbe_pbthresh_setup(adapter);
 	hw->fc.pause_time = IXGBE_DEFAULT_FCPAUSE;
@@ -6276,7 +6276,7 @@ static int ixgbe_sw_init(struct ixgbe_adapter *adapter,
 		e_dev_warn("Enabling SR-IOV VFs using the max_vfs module parameter is deprecated - please use the pci sysfs interface instead.\n");
 
 	/* assign number of SR-IOV VFs */
-	if (hw->mac.type != ixgbe_mac_82598EB) {
+	if (hw->mac.type != ixgbe_mac_82598EB) { //max vfs is 63
 		if (max_vfs > IXGBE_MAX_VFS_DRV_LIMIT) {
 			max_vfs = 0;
 			e_dev_warn("max_vfs parameter out of range. Not assigning any SR-IOV VFs\n");
@@ -10234,7 +10234,7 @@ bool ixgbe_wol_supported(struct ixgbe_adapter *adapter, u16 device_id,
 
 /**
  * ixgbe_probe - Device Initialization Routine
- * @pdev: PCI device information struct
+ * @pdev: PCI device information struct //代表pci ixgbe网卡设备
  * @ent: entry in ixgbe_pci_tbl
  *
  * Returns 0 on success, negative on failure
@@ -10243,9 +10243,21 @@ bool ixgbe_wol_supported(struct ixgbe_adapter *adapter, u16 device_id,
  * The OS initialization, configuring of the adapter private structure,
  * and a hardware reset occur.
  **/
+ //pci_dev结构是在启动阶段保留下来的代表了网卡设备，体现了作为PCI设备所应有的规范。
+ //net_device结构，为上层协议提供统一的接口，是驱动层的网卡操作结构,网卡的网络传输性质，实际是通过另一结构体net_device来体现的，该结构体的初始化由网卡驱动程序实现
+ //PCI设备的驱动程序由pci_driver结构体表示，故网卡驱动应该是该结构体的一个实例
+ //网卡驱动实际操作的特定适配器是由与硬件相关的adapter所表示的结构体，adapter体现了大部分与硬件相关的属性
+ //与网卡设备pci_dev的通信是通过adapter来实现的，而这个实现则是网卡驱动所要完成的任务
+ /*
+  *ip
+  *net_device
+  *adapter adapter-hw从pci dev中读出的硬件参数
+  *pci_dev
+  *pci
+  */
 static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
-	struct net_device *netdev;
+	struct net_device *netdev; //point to the net_device struct, but after that is the ixgbe private data
 	struct ixgbe_adapter *adapter = NULL;
 	struct ixgbe_hw *hw;
 	const struct ixgbe_info *ii = ixgbe_info_tbl[ent->driver_data];//通过硬件的信息来确定需要初始化那个驱动,针对不同设备调用不同的操作
@@ -10266,7 +10278,7 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 		     pci_name(pdev), pdev->vendor, pdev->device);
 		return -EINVAL;
 	}
-
+//PCI设备中一般都带有一些RAM和ROM 空间，通常的控制/状态寄存器和数据寄存器也往往以RAM区间的形式出现，而这些区间的地址在设备内部一般都是从0开始编址的，那么当总线上挂接了多个设备时，对这些空间的访问就会产生冲突。所以，这些地址都要先映射到系统总线上，再进一步映射到内核的虚拟地址空间。
 	err = pci_enable_device_mem(pdev);//Initialize device before it's used by a driver. Ask low-level code to enable Memory resources
 	if (err)
 		return err;
@@ -10282,8 +10294,8 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 		}
 		pci_using_dac = 0;
 	}
-
-	err = pci_request_mem_regions(pdev, ixgbe_driver_name);//alloc phy mem to dev
+    //几乎每一种外设都是通过读写设备上的寄存器来进行的，通常包括控制寄存器、状态寄存器和数据寄存器三大类，外设的寄存器通常被连续地编址
+	err = pci_request_mem_regions(pdev, ixgbe_driver_name);//alloc phy mem to dev通知内核该设备对应的IO端口和内存资源已经使用，其他的PCI设备不要再使用这个区域
 	if (err) {
 		dev_err(&pdev->dev,
 			"pci_request_selected_regions failed 0x%x\n", err);
@@ -10293,7 +10305,7 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	pci_enable_pcie_error_reporting(pdev);
 
 	pci_set_master(pdev);//enables bus-mastering for device dev
-	pci_save_state(pdev);//save the PCI configuration space of a device before suspending
+	pci_save_state(pdev);//save the PCI configuration space of a device before suspending而PCI配置空间由Linux内核中的PCI初始化代码使用，这些代码用于配置PCI设备，比如中断号以及I/O或内存基地址
 
 	if (ii->mac == ixgbe_mac_82598EB) {
 #ifdef CONFIG_IXGBE_DCB
@@ -10305,7 +10317,7 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	}
 //Allocates a struct net_device with private data area for driver use and performs basic initialization.  Also allocates subqueue structs for each queue on the device.
 
-	netdev = alloc_etherdev_mq(sizeof(struct ixgbe_adapter), indices);// indices max tx queue defined local, alloc_netdev_mqs
+	netdev = alloc_etherdev_mq(sizeof(struct ixgbe_adapter), indices);// indices max tx queue 64 defined local, alloc_netdev_mqs, the alloc size is net_device plus ixgbe_adapter 
     if (!netdev) {
 		err = -ENOMEM;
 		goto err_alloc_etherdev;
@@ -10313,11 +10325,11 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	SET_NETDEV_DEV(netdev, &pdev->dev);//(netdev)->dev.parent = (pdev) the device to which it is attached
 
-	adapter = netdev_priv(netdev); //access network device private data
+	adapter = netdev_priv(netdev); //point to the end of net_device struct, access network device private data
 
 	adapter->netdev = netdev;
 	adapter->pdev = pdev; //pci dev
-	hw = &adapter->hw;
+	hw = &adapter->hw;//hw assign
 	hw->back = adapter;
 	adapter->msg_enable = netif_msg_init(debug, DEFAULT_MSG_ENABLE);
 
@@ -10343,8 +10355,8 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	/* EEPROM */
 	hw->eeprom.ops = *ii->eeprom_ops;
-	eec = IXGBE_READ_REG(hw, IXGBE_EEC(hw)); //EEC???
-	if (ixgbe_removed(hw->hw_addr)) {
+	eec = IXGBE_READ_REG(hw, IXGBE_EEC(hw)); //EEC EEPROM/Flash Control Register
+	if (ixgbe_removed(hw->hw_addr)) { //maped by ioremap
 		err = -EIO;
 		goto err_ioremap;
 	}
@@ -10364,7 +10376,7 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	hw->phy.mdio.mdio_write = ixgbe_mdio_write;
 
 	/* setup the private structure */
-	err = ixgbe_sw_init(adapter, ii);// Initialize general software structures (struct ixgbe_adapter)
+	err = ixgbe_sw_init(adapter, ii);// Initialize general software structures (struct ixgbe_adapter)based on PCI device information
 	if (err)
 		goto err_sw_init;
 
@@ -10372,14 +10384,14 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (hw->mac.ops.init_swfw_sync)
 		hw->mac.ops.init_swfw_sync(hw);
 
-	/* Make it possible the adapter to be woken up via WOL */
+	/* Make it possible the adapter to be woken up via WOL */ //wake on lan
 	switch (adapter->hw.mac.type) {
 	case ixgbe_mac_82599EB:
 	case ixgbe_mac_X540:
 	case ixgbe_mac_X550:
 	case ixgbe_mac_X550EM_x:
 	case ixgbe_mac_x550em_a:
-		IXGBE_WRITE_REG(&adapter->hw, IXGBE_WUS, ~0);
+		IXGBE_WRITE_REG(&adapter->hw, IXGBE_WUS, ~0);//Wake Up Status Register
 		break;
 	default:
 		break;
@@ -10400,10 +10412,15 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	/* reset_hw fills in the perm_addr as well */
 	hw->phy.reset_if_overtemp = true;
-	err = hw->mac.ops.reset_hw(hw);
+
+/*  Resets the hardware by resetting the transmit and receive units, masks
+ *  and clears all interrupts, perform a PHY reset, and perform a link (MAC)
+ *  reset.
+ **/
+	err = hw->mac.ops.reset_hw(hw);//ixgbe_reset_hw_82599, init hw include tx rx units and mac, link
 	hw->phy.reset_if_overtemp = false;
 	ixgbe_set_eee_capable(adapter);
-	if (err == IXGBE_ERR_SFP_NOT_PRESENT) {
+	if (err == IXGBE_ERR_SFP_NOT_PRESENT) {//sfp Small Form-factor Pluggable 电信号转换为光信号的接口器件
 		err = 0;
 	} else if (err == IXGBE_ERR_SFP_NOT_SUPPORTED) {
 		e_dev_err("failed to load because an unsupported SFP+ or QSFP module type was detected.\n");
@@ -10419,13 +10436,14 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (adapter->hw.mac.type == ixgbe_mac_82598EB)
 		goto skip_sriov;
 	/* Mailbox */
-	ixgbe_init_mbx_params_pf(hw);
-	hw->mbx.ops = ii->mbx_ops;
-	pci_sriov_set_totalvfs(pdev, IXGBE_MAX_VFS_DRV_LIMIT);
-	ixgbe_enable_sriov(adapter, max_vfs);
+	ixgbe_init_mbx_params_pf(hw); //Initializes the hw->mbx struct to correct values for pf mailbox
+	hw->mbx.ops = ii->mbx_ops;//mbx operation based on the mac type
+	pci_sriov_set_totalvfs(pdev, IXGBE_MAX_VFS_DRV_LIMIT);//dev->sriov->driver_max_VFs = numvfs;
+	ixgbe_enable_sriov(adapter, max_vfs);//max_vfs??? 0
 skip_sriov:
 
 #endif
+#if 1 //ixgbe features
 	netdev->features = NETIF_F_SG |
 			   NETIF_F_TSO |
 			   NETIF_F_TSO6 |
@@ -10509,13 +10527,13 @@ skip_sriov:
 					 NETIF_F_FCOE_MTU;
 	}
 #endif /* IXGBE_FCOE */
-
+#endif //if 1
 	if (adapter->flags2 & IXGBE_FLAG2_RSC_CAPABLE)
 		netdev->hw_features |= NETIF_F_LRO;
 	if (adapter->flags2 & IXGBE_FLAG2_RSC_ENABLED)
 		netdev->features |= NETIF_F_LRO;
 
-	/* make sure the EEPROM is good */
+	/* make sure the EEPROM is good */ //Electrically Erasable Programmable read only memory
 	if (hw->eeprom.ops.validate_checksum(hw, NULL) < 0) {
 		e_dev_err("The EEPROM Checksum Is Not Valid\n");
 		err = -EIO;
@@ -10523,31 +10541,32 @@ skip_sriov:
 	}
 
 	eth_platform_get_mac_address(&adapter->pdev->dev,
-				     adapter->hw.mac.perm_addr);
+				     adapter->hw.mac.perm_addr);//copy pdev info macaddr to the adapter hw initial value of the ports MAC address.
 
-	memcpy(netdev->dev_addr, hw->mac.perm_addr, netdev->addr_len);
+	memcpy(netdev->dev_addr, hw->mac.perm_addr, netdev->addr_len);//copy the hw mac addr to the net_device dev addr
 
-	if (!is_valid_ether_addr(netdev->dev_addr)) {
+	if (!is_valid_ether_addr(netdev->dev_addr)) { // validate the dev addr
 		e_dev_err("invalid MAC address\n");
 		err = -EIO;
 		goto err_sw_init;
 	}
 
 	/* Set hw->mac.addr to permanent MAC address */
-	ether_addr_copy(hw->mac.addr, hw->mac.perm_addr);
-	ixgbe_mac_set_default_filter(adapter);
+	ether_addr_copy(hw->mac.addr, hw->mac.perm_addr);//copy the init mac addr to the current mac addr
+	ixgbe_mac_set_default_filter(adapter);//write hw mac addr to the rar as the default mac filter
 
-	timer_setup(&adapter->service_timer, ixgbe_service_timer, 0);
+	timer_setup(&adapter->service_timer, ixgbe_service_timer, 0);//setup timer, service_timer->function =ixgbe_service_timer
 
 	if (ixgbe_removed(hw->hw_addr)) {
 		err = -EIO;
 		goto err_sw_init;
 	}
-	INIT_WORK(&adapter->service_task, ixgbe_service_task);
+	INIT_WORK(&adapter->service_task, ixgbe_service_task);//init work service_task->fun=ixgbe_service_task ???work
 	set_bit(__IXGBE_SERVICE_INITED, &adapter->state);
 	clear_bit(__IXGBE_SERVICE_SCHED, &adapter->state);
 
-	err = ixgbe_init_interrupt_scheme(adapter);
+	err = ixgbe_init_interrupt_scheme(adapter);//interrupt vectors init
+
 	if (err)
 		goto err_sw_init;
 

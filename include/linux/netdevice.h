@@ -684,7 +684,7 @@ struct netdev_rx_queue {
 	struct rps_map __rcu		*rps_map;
 	struct rps_dev_flow_table __rcu	*rps_flow_table;
 #endif
-	struct kobject			kobj;
+	struct kobject			kobj;//bus,devices,drivers等。这些容器通过kobject链接起来，形成一个树状结构，这个树状结构与/sys中是一一对应的
 	struct net_device		*dev;
 } ____cacheline_aligned_in_smp;
 

@@ -714,7 +714,10 @@ static void ixgbe_set_num_queues(struct ixgbe_adapter *adapter)
 #endif
 	if (ixgbe_set_sriov_queues(adapter))
 		return;
-
+/**
+ * This is our "base" multiqueue mode.  RSS (Receive Side Scaling) will try
+ * to allocate one Rx queue per CPU, and if available, one Tx queue per CPU.
+ **/
 	ixgbe_set_rss_queues(adapter);
 }
 
