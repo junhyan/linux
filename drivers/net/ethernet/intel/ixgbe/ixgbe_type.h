@@ -3522,7 +3522,7 @@ struct ixgbe_mac_info {
 	enum ixgbe_mac_type             type;
 	u8                              addr[ETH_ALEN];//current value of the ports MAC addres.
 	u8                              perm_addr[ETH_ALEN];//initial value of the ports MAC address.
-	u8                              san_addr[ETH_ALEN];
+	u8                              san_addr[ETH_ALEN]; //Storage Area Networks
 	/* prefix for World Wide Node Name (WWNN) */
 	u16                             wwnn_prefix;
 	/* prefix for World Wide Port Name (WWPN) */

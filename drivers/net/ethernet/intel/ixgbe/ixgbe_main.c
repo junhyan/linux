@@ -6627,7 +6627,7 @@ int ixgbe_open(struct net_device *netdev)
 	if (test_bit(__IXGBE_TESTING, &adapter->state))
 		return -EBUSY;
 
-	netif_carrier_off(netdev);
+	netif_carrier_off(netdev); //当设备驱动侦测到在其设备上丢失信号时，它调用netif_carrier_off函数
 
 	/* allocate transmit descriptors */
 	err = ixgbe_setup_all_tx_resources(adapter);
@@ -9909,7 +9909,7 @@ static void ixgbe_fwd_del(struct net_device *pdev, void *priv)
 		int rss = min_t(int, ixgbe_max_rss_indices(adapter),
 				num_online_cpus());
 
-		adapter->flags &= ~IXGBE_FLAG_VMDQ_ENABLED;
+		adapter->flags &= ~IXGBE_FLAG_VMDQ_ENABLED; //del this flag
 		adapter->flags &= ~IXGBE_FLAG_SRIOV_ENABLED;
 		adapter->ring_feature[RING_F_RSS].limit = rss;
 	}
@@ -10298,7 +10298,7 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	err = pci_request_mem_regions(pdev, ixgbe_driver_name);//alloc phy mem to dev通知内核该设备对应的IO端口和内存资源已经使用，其他的PCI设备不要再使用这个区域
 	if (err) {
 		dev_err(&pdev->dev,
-			"pci_request_selected_regions failed 0x%x\n", err);
+			"pci_request_selected_regions failed 0x%x\n", e//register the netdev to the system, via rtnetlinkrr);
 		goto err_pci_reg;
 	}
 
@@ -10438,7 +10438,7 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	/* Mailbox */
 	ixgbe_init_mbx_params_pf(hw); //Initializes the hw->mbx struct to correct values for pf mailbox
 	hw->mbx.ops = ii->mbx_ops;//mbx operation based on the mac type
-	pci_sriov_set_totalvfs(pdev, IXGBE_MAX_VFS_DRV_LIMIT);//dev->sriov->driver_max_VFs = numvfs;
+	pci_sriov_set_totalvfs(pdev, IXGBE_MAX_VFS_DRV_LIMIT);//dev->sriov->driver_max_VFs = numvfs;63
 	ixgbe_enable_sriov(adapter, max_vfs);//max_vfs??? 0
 skip_sriov:
 
@@ -10543,7 +10543,7 @@ skip_sriov:
 	eth_platform_get_mac_address(&adapter->pdev->dev,
 				     adapter->hw.mac.perm_addr);//copy pdev info macaddr to the adapter hw initial value of the ports MAC address.
 
-	memcpy(netdev->dev_addr, hw->mac.perm_addr, netdev->addr_len);//copy the hw mac addr to the net_device dev addr
+	memcpy(netdev->dev_addr, hw->mac.perm_addr, netdev->addr_len);//copy the hw mac addr to the net_device dev_addr
 
 	if (!is_valid_ether_addr(netdev->dev_addr)) { // validate the dev addr
 		e_dev_err("invalid MAC address\n");
@@ -10570,7 +10570,7 @@ skip_sriov:
 	if (err)
 		goto err_sw_init;
 
-	for (i = 0; i < adapter->num_rx_queues; i++)
+	for (i = 0; i < adapter->num_rx_queues; i++) //init ring->syncp
 		u64_stats_init(&adapter->rx_ring[i]->syncp);
 	for (i = 0; i < adapter->num_tx_queues; i++)
 		u64_stats_init(&adapter->tx_ring[i]->syncp);
@@ -10580,7 +10580,7 @@ skip_sriov:
 	/* WOL not supported for all devices */
 	adapter->wol = 0;
 	hw->eeprom.ops.read(hw, 0x2c, &adapter->eeprom_cap);
-	hw->wol_enabled = ixgbe_wol_supported(adapter, pdev->device,
+	hw->wol_enabled = ixgbe_wol_supported(adapter, pdev->device, //wake on lan
 						pdev->subsystem_device);
 	if (hw->wol_enabled)
 		adapter->wol = IXGBE_WUFC_MAG;
@@ -10593,7 +10593,7 @@ skip_sriov:
 
 	/* pick up the PCI bus settings for reporting later */
 	if (ixgbe_pcie_from_parent(hw))
-		ixgbe_get_parent_bus_info(adapter);
+		ixgbe_get_parent_bus_info(adapter); //get information from pci bus
 	else
 		 hw->mac.ops.get_bus_info(hw);
 
@@ -10607,7 +10607,7 @@ skip_sriov:
 		expected_gts = min(ixgbe_enumerate_functions(adapter) * 10, 16);
 		break;
 	default:
-		expected_gts = ixgbe_enumerate_functions(adapter) * 10;
+		expected_gts = ixgbe_enumerate_functions(adapter) * 10; //ixgbe_enumerate_functions get the port numbers of the dev
 		break;
 	}
 
@@ -10615,7 +10615,7 @@ skip_sriov:
 	if (expected_gts > 0)
 		ixgbe_check_minimum_link(adapter, expected_gts);
 
-	err = ixgbe_read_pba_string_generic(hw, part_str, sizeof(part_str));
+	err = ixgbe_read_pba_string_generic(hw, part_str, sizeof(part_str));//????what is pba
 	if (err)
 		strlcpy(part_str, "Unknown", sizeof(part_str));
 	if (ixgbe_is_sfp(hw) && hw->phy.sfp_type != ixgbe_sfp_type_not_present)
@@ -10640,8 +10640,8 @@ skip_sriov:
 			   "hardware.\n");
 	}
 	strcpy(netdev->name, "eth%d");
-	pci_set_drvdata(pdev, adapter);
-	err = register_netdev(netdev);
+	pci_set_drvdata(pdev, adapter);//set pdev->driver=adapter
+	err = register_netdev(netdev);//register the netdev to the system, via rtnetlink
 	if (err)
 		goto err_register;
 
@@ -10651,17 +10651,17 @@ skip_sriov:
 		hw->mac.ops.disable_tx_laser(hw);
 
 	/* carrier off reporting is important to ethtool even BEFORE open */
-	netif_carrier_off(netdev);
+	netif_carrier_off(netdev);// 当设备驱动侦测到在其设备上丢失信号时，它调用netif_carrier_off函数
 
 #ifdef CONFIG_IXGBE_DCA
 	if (dca_add_requester(&pdev->dev) == 0) {
 		adapter->flags |= IXGBE_FLAG_DCA_ENABLED;
-		ixgbe_setup_dca(adapter);
+		ixgbe_setup_dca(adapter); //direct cache access
 	}
 #endif
-	if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED) {
+	if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED) { //IXGBE_FLAG_SRIOV_ENABLED is set at ixgbe_enble_sriov
 		e_info(probe, "IOV is enabled with %d VFs\n", adapter->num_vfs);
-		for (i = 0; i < adapter->num_vfs; i++)
+		for (i = 0; i < adapter->num_vfs; i++) //config vf mac address
 			ixgbe_vf_configuration(pdev, (i | 0x10000000));
 	}
 
@@ -10674,7 +10674,7 @@ skip_sriov:
 					   ixgbe_driver_version);
 
 	/* add san mac addr to netdev */
-	ixgbe_add_sanmac_netdev(netdev);
+	ixgbe_add_sanmac_netdev(netdev); //add Storage Area Networks mac addr
 
 	e_dev_info("%s\n", ixgbe_default_device_descr);
 

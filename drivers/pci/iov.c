@@ -124,18 +124,18 @@ int pci_iov_add_virtfn(struct pci_dev *dev, int id)
 	struct pci_sriov *iov = dev->sriov;
 	struct pci_bus *bus;
 
-	bus = virtfn_add_bus(dev->bus, pci_iov_virtfn_bus(dev, id));
+	bus = virtfn_add_bus(dev->bus, pci_iov_virtfn_bus(dev, id));//alloc pci bus for vf
 	if (!bus)
 		goto failed;
 
-	virtfn = pci_alloc_dev(bus);
+	virtfn = pci_alloc_dev(bus); //alloc vf
 	if (!virtfn)
 		goto failed0;
 
 	virtfn->devfn = pci_iov_virtfn_devfn(dev, id);
 	virtfn->vendor = dev->vendor;
 	virtfn->device = iov->vf_device;
-	rc = pci_setup_device(virtfn);
+	rc = pci_setup_device(virtfn);//init vf
 	if (rc)
 		goto failed0;
 
@@ -157,7 +157,7 @@ int pci_iov_add_virtfn(struct pci_dev *dev, int id)
 		BUG_ON(rc);
 	}
 
-	pci_device_add(virtfn, virtfn->bus);
+	pci_device_add(virtfn, virtfn->bus); //add device to device hierarchy
 
 	sprintf(buf, "virtfn%u", id);
 	rc = sysfs_create_link(&dev->dev.kobj, &virtfn->dev.kobj, buf);
@@ -169,7 +169,7 @@ int pci_iov_add_virtfn(struct pci_dev *dev, int id)
 
 	kobject_uevent(&virtfn->dev.kobj, KOBJ_CHANGE);
 
-	pci_bus_add_device(virtfn);
+	pci_bus_add_device(virtfn);//attach vf driver automaticly
 
 	return 0;
 
@@ -310,7 +310,7 @@ static int sriov_enable(struct pci_dev *dev, int nr_virtfn)
 	pci_cfg_access_unlock(dev);
 
 	for (i = 0; i < initial; i++) {
-		rc = pci_iov_add_virtfn(dev, i);
+		rc = pci_iov_add_virtfn(dev, i);//alloc vfs
 		if (rc)
 			goto failed;
 	}

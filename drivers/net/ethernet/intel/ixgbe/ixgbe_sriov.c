@@ -178,7 +178,7 @@ void ixgbe_enable_sriov(struct ixgbe_adapter *adapter, unsigned int max_vfs)
 	int pre_existing_vfs = 0;
 	unsigned int num_vfs;
 
-	pre_existing_vfs = pci_num_vf(adapter->pdev);//return dev->sriov->num_VFs;
+	pre_existing_vfs = pci_num_vf(adapter->pdev);//return dev->sriov->num_VFs to varify is there existing vfs;
 	if (!pre_existing_vfs && !max_vfs)
 		return;
 
@@ -188,11 +188,11 @@ void ixgbe_enable_sriov(struct ixgbe_adapter *adapter, unsigned int max_vfs)
 	 * while VFs were assigned to guest VMs or because the VFs
 	 * have been created via the new PCI SR-IOV sysfs interface.
 	 */
-	if (pre_existing_vfs) {
+	if (pre_existing_vfs) { //there is existing vfs
 		num_vfs = pre_existing_vfs;
 		dev_warn(&adapter->pdev->dev,
 			 "Virtual Functions already enabled for this device - Please reload all VF drivers to avoid spoofed packet errors\n");
-	} else {
+	} else { //no vf now
 		int err;
 		/*
 		 * The 82599 supports up to 64 VFs per physical function
@@ -201,7 +201,7 @@ void ixgbe_enable_sriov(struct ixgbe_adapter *adapter, unsigned int max_vfs)
 		 * physical function.  If the user requests greater than
 		 * 63 VFs then it is an error - reset to default of zero.
 		 */
-		num_vfs = min_t(unsigned int, max_vfs, IXGBE_MAX_VFS_DRV_LIMIT);
+		num_vfs = min_t(unsigned int, max_vfs, IXGBE_MAX_VFS_DRV_LIMIT);//get the min from 63 and max vfs
 
 		err = pci_enable_sriov(adapter->pdev, num_vfs);
 		if (err) {
@@ -210,9 +210,9 @@ void ixgbe_enable_sriov(struct ixgbe_adapter *adapter, unsigned int max_vfs)
 		}
 	}
 
-	if (!__ixgbe_enable_sriov(adapter, num_vfs)) {
+	if (!__ixgbe_enable_sriov(adapter, num_vfs)) { //alloc vfinfo set flag IXGBE_FLAG_SRIOV_ENABLED
 		ixgbe_get_vfs(adapter);
-		return;
+		return; //this is the success return
 	}
 
 	/* If we have gotten to this point then there is no memory available

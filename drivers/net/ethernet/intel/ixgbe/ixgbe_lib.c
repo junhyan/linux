@@ -772,7 +772,7 @@ static int ixgbe_acquire_msix_vectors(struct ixgbe_adapter *adapter)
 	for (i = 0; i < vectors; i++)
 		adapter->msix_entries[i].entry = i;
 
-	vectors = pci_enable_msix_range(adapter->pdev, adapter->msix_entries,
+	vectors = pci_enable_msix_range(adapter->pdev, adapter->msix_entries, //with a maximum possible number of interrupts 
 					vector_threshold, vectors);
 
 	if (vectors < 0) {
@@ -837,9 +837,9 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
 	int node = NUMA_NO_NODE;
 	int cpu = -1;
 	int ring_count, size;
-	u8 tcs = netdev_get_num_tc(adapter->netdev);
+	u8 tcs = netdev_get_num_tc(adapter->netdev); //????
 
-	ring_count = txr_count + rxr_count + xdp_count;
+	ring_count = txr_count + rxr_count + xdp_count;//current v_idx, ring vctort count
 	size = sizeof(struct ixgbe_q_vector) +
 	       (sizeof(struct ixgbe_ring) * ring_count);
 
@@ -855,7 +855,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
 	}
 
 	/* allocate q_vector and rings */
-	q_vector = kzalloc_node(size, GFP_KERNEL, node);
+	q_vector = kzalloc_node(size, GFP_KERNEL, node);//alloc 1 interrupt vector and ring_count ixgbe ring
 	if (!q_vector)
 		q_vector = kzalloc(size, GFP_KERNEL);
 	if (!q_vector)
@@ -864,7 +864,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
 	/* setup affinity mask and node */
 	if (cpu != -1)
 		cpumask_set_cpu(cpu, &q_vector->affinity_mask);
-	q_vector->numa_node = node;
+	q_vector->numa_node = node; //set the ixgbe q vector numa node
 
 #ifdef CONFIG_IXGBE_DCA
 	/* initialize CPU for DCA */
@@ -872,16 +872,16 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
 
 #endif
 	/* initialize NAPI */
-	netif_napi_add(adapter->netdev, &q_vector->napi,
+	netif_napi_add(adapter->netdev, &q_vector->napi, //add napi to ixgbe and callback function ixgbe_poll
 		       ixgbe_poll, 64);
 
 	/* tie q_vector and adapter together */
-	adapter->q_vector[v_idx] = q_vector;
+	adapter->q_vector[v_idx] = q_vector;//add current q vector to the adapter q vectro array
 	q_vector->adapter = adapter;
 	q_vector->v_idx = v_idx;
 
 	/* initialize work limits */
-	q_vector->tx.work_limit = adapter->tx_work_limit;
+	q_vector->tx.work_limit = adapter->tx_work_limit; //what is the work limit 
 
 	/* Initialize setting for adaptive ITR */
 	q_vector->tx.itr = IXGBE_ITR_ADAPTIVE_MAX_USECS |
@@ -931,10 +931,10 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
 
 		/* update count and index */
 		txr_count--;
-		txr_idx += v_count;
+		txr_idx += v_count; //add next to the txr_idx 
 
 		/* push pointer to next ring */
-		ring++;
+		ring++; //add length of struct ixgbe_ring
 	}
 
 	while (xdp_count) {
@@ -965,7 +965,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
 	}
 
 	while (rxr_count) {
-		/* assign generic ring traits */
+		/* assign generic ring traits 特点*/
 		ring->dev = &adapter->pdev->dev;
 		ring->netdev = adapter->netdev;
 
@@ -973,7 +973,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
 		ring->q_vector = q_vector;
 
 		/* update q_vector Rx values */
-		ixgbe_add_ring(ring, &q_vector->rx);
+		ixgbe_add_ring(ring, &q_vector->rx); //add ring to the &q_vector->rx container
 
 		/*
 		 * 82599 errata, UDP frames with a 0 checksum
@@ -1001,10 +1001,10 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
 			ring->queue_index = rxr_idx;
 
 		/* assign ring to adapter */
-		adapter->rx_ring[rxr_idx] = ring;
+		adapter->rx_ring[rxr_idx] = ring; //add this rx ring to the adapter rx ring array
 
 		/* update count and index */
-		rxr_count--;
+		rxr_count--; //finish 1 rx ring configure desc 1
 		rxr_idx += v_count;
 
 		/* push pointer to next ring */
@@ -1059,9 +1059,9 @@ static void ixgbe_free_q_vector(struct ixgbe_adapter *adapter, int v_idx)
 static int ixgbe_alloc_q_vectors(struct ixgbe_adapter *adapter)
 {
 	int q_vectors = adapter->num_q_vectors;
-	int rxr_remaining = adapter->num_rx_queues;
-	int txr_remaining = adapter->num_tx_queues;
-	int xdp_remaining = adapter->num_xdp_queues;
+	int rxr_remaining = adapter->num_rx_queues;//rx ring num
+	int txr_remaining = adapter->num_tx_queues;//tx ring num
+	int xdp_remaining = adapter->num_xdp_queues;//xdp??? 
 	int rxr_idx = 0, txr_idx = 0, xdp_idx = 0, v_idx = 0;
 	int err;
 
@@ -1069,7 +1069,29 @@ static int ixgbe_alloc_q_vectors(struct ixgbe_adapter *adapter)
 	if (!(adapter->flags & IXGBE_FLAG_MSIX_ENABLED))
 		q_vectors = 1;
 
-	if (q_vectors >= (rxr_remaining + txr_remaining + xdp_remaining)) {
+/**
+ * ixgbe_alloc_q_vector - Allocate memory for a single interrupt vector
+ * @adapter: board private structure to initialize
+ * @v_count: q_vectors allocated on adapter, used for ring interleaving
+ * @v_idx: index of vector in adapter struct
+ * @txr_count: total number of Tx rings to allocate
+ * @txr_idx: index of first Tx ring to allocate
+ * @xdp_count: total number of XDP rings to allocate
+ * @xdp_idx: index of first XDP ring to allocate
+ * @rxr_count: total number of Rx rings to allocate
+ * @rxr_idx: index of first Rx ring to allocate
+ *
+ * We allocate one q_vector.  If allocation fails we return -ENOMEM.
+static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,                                                        
+                int v_count, int v_idx,
+                int txr_count, int txr_idx,
+                int xdp_count, int xdp_idx,
+                int rxr_count, int rxr_idx)
+**/
+
+
+
+	if (q_vectors >= (rxr_remaining + txr_remaining + xdp_remaining)) { // if the num of q vector is enaugh,every rx ring alloc a q vector
 		for (; rxr_remaining; v_idx++) {
 			err = ixgbe_alloc_q_vector(adapter, q_vectors, v_idx,
 						   0, 0, 0, 0, 1, rxr_idx);
@@ -1084,7 +1106,7 @@ static int ixgbe_alloc_q_vectors(struct ixgbe_adapter *adapter)
 	}
 
 	for (; v_idx < q_vectors; v_idx++) {
-		int rqpv = DIV_ROUND_UP(rxr_remaining, q_vectors - v_idx);
+		int rqpv = DIV_ROUND_UP(rxr_remaining, q_vectors - v_idx);//tail of the rxr_remaining/q_vectors - v_idx
 		int tqpv = DIV_ROUND_UP(txr_remaining, q_vectors - v_idx);
 		int xqpv = DIV_ROUND_UP(xdp_remaining, q_vectors - v_idx);
 
@@ -1226,18 +1248,18 @@ int ixgbe_init_interrupt_scheme(struct ixgbe_adapter *adapter)
 	int err;
 
 	/* Number of supported queues */
-	ixgbe_set_num_queues(adapter);
+	ixgbe_set_num_queues(adapter); //set rx and tx queue num
 
 	/* Set interrupt mode */
-	ixgbe_set_interrupt_capability(adapter);
+	ixgbe_set_interrupt_capability(adapter); //if enable msi, get the num of msix vector.and set flag IXGBE_FLAG_MSIX_ENABLED,  else disable some feathers and set vector to 1,
 
-	err = ixgbe_alloc_q_vectors(adapter);
+	err = ixgbe_alloc_q_vectors(adapter); //according to the vector's num alloc interrupt vector to rx and tx ring.
 	if (err) {
 		e_dev_err("Unable to allocate memory for queue vectors\n");
 		goto err_alloc_q_vectors;
 	}
 
-	ixgbe_cache_ring_register(adapter);
+	ixgbe_cache_ring_register(adapter); //????init xx_ring->reg_idx
 
 	e_dev_info("Multiqueue %s: Rx Queue count = %u, Tx Queue count = %u XDP Queue count = %u\n",
 		   (adapter->num_rx_queues > 1) ? "Enabled" : "Disabled",
