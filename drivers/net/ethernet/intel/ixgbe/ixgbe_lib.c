@@ -512,7 +512,7 @@ static bool ixgbe_set_sriov_queues(struct ixgbe_adapter *adapter)
 #ifdef IXGBE_FCOE
 	u16 fcoe_i = 0;
 #endif
-	bool pools = (find_first_zero_bit(&adapter->fwd_bitmask, 32) > 1);
+	bool pools = (find_first_zero_bit(&adapter->fwd_bitmask, 32) > 1); //???
 
 	/* only proceed if SR-IOV is enabled */
 	if (!(adapter->flags & IXGBE_FLAG_SRIOV_ENABLED))
@@ -1106,7 +1106,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
 	}
 
 	for (; v_idx < q_vectors; v_idx++) {
-		int rqpv = DIV_ROUND_UP(rxr_remaining, q_vectors - v_idx);//tail of the rxr_remaining/q_vectors - v_idx
+		int rqpv = DIV_ROUND_UP(rxr_remaining, q_vectors - v_idx);//tail of the rxr_remaining/(q_vectors - v_idx)
 		int tqpv = DIV_ROUND_UP(txr_remaining, q_vectors - v_idx);
 		int xqpv = DIV_ROUND_UP(xdp_remaining, q_vectors - v_idx);
 
