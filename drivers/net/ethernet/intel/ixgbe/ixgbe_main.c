@@ -5468,7 +5468,7 @@ static void ixgbe_configure(struct ixgbe_adapter *adapter)
 {
 	struct ixgbe_hw *hw = &adapter->hw;
 
-	ixgbe_configure_pb(adapter);
+	ixgbe_configure_pb(adapter); //???pba
 #ifdef CONFIG_IXGBE_DCB
 	ixgbe_configure_dcb(adapter);
 #endif
@@ -5476,7 +5476,7 @@ static void ixgbe_configure(struct ixgbe_adapter *adapter)
 	 * We must restore virtualization before VLANs or else
 	 * the VLVF registers will not be populated
 	 */
-	ixgbe_configure_virtualization(adapter);
+	ixgbe_configure_virtualization(adapter); //if enable sriov
 
 	ixgbe_set_rx_mode(adapter->netdev);
 	ixgbe_restore_vlan(adapter);
@@ -6326,7 +6326,7 @@ int ixgbe_setup_tx_resources(struct ixgbe_ring *tx_ring)
 	if (tx_ring->q_vector)
 		ring_node = tx_ring->q_vector->numa_node;
 
-	tx_ring->tx_buffer_info = vmalloc_node(size, ring_node);
+	tx_ring->tx_buffer_info = vmalloc_node(size, ring_node); //numa used
 	if (!tx_ring->tx_buffer_info)
 		tx_ring->tx_buffer_info = vmalloc(size);
 	if (!tx_ring->tx_buffer_info)
@@ -6337,7 +6337,7 @@ int ixgbe_setup_tx_resources(struct ixgbe_ring *tx_ring)
 	tx_ring->size = ALIGN(tx_ring->size, 4096);
 
 	set_dev_node(dev, ring_node);
-	tx_ring->desc = dma_alloc_coherent(dev,
+	tx_ring->desc = dma_alloc_coherent(dev, //alloc dma mem to the rx ring ring->dma is the physical addr and ring->desc is the virturl addr
 					   tx_ring->size,
 					   &tx_ring->dma,
 					   GFP_KERNEL);
@@ -6373,7 +6373,7 @@ static int ixgbe_setup_all_tx_resources(struct ixgbe_adapter *adapter)
 {
 	int i, j = 0, err = 0;
 
-	for (i = 0; i < adapter->num_tx_queues; i++) {
+	for (i = 0; i < adapter->num_tx_queues; i++) { //setup for tx rings 
 		err = ixgbe_setup_tx_resources(adapter->tx_ring[i]);
 		if (!err)
 			continue;
@@ -6430,7 +6430,7 @@ int ixgbe_setup_rx_resources(struct ixgbe_adapter *adapter,
 	rx_ring->size = ALIGN(rx_ring->size, 4096);
 
 	set_dev_node(dev, ring_node);
-	rx_ring->desc = dma_alloc_coherent(dev,
+	rx_ring->desc = dma_alloc_coherent(dev, //alloc rx ring dma addr also same as tx ring dma is the physical addr and desc is the virtrual addr
 					   rx_ring->size,
 					   &rx_ring->dma,
 					   GFP_KERNEL);
@@ -6630,16 +6630,16 @@ int ixgbe_open(struct net_device *netdev)
 	netif_carrier_off(netdev); //当设备驱动侦测到在其设备上丢失信号时，它调用netif_carrier_off函数
 
 	/* allocate transmit descriptors */
-	err = ixgbe_setup_all_tx_resources(adapter);
+	err = ixgbe_setup_all_tx_resources(adapter); //alloc tx ring dma addr
 	if (err)
 		goto err_setup_tx;
 
 	/* allocate receive descriptors */
-	err = ixgbe_setup_all_rx_resources(adapter);
+	err = ixgbe_setup_all_rx_resources(adapter);//rx ring dma
 	if (err)
 		goto err_setup_rx;
 
-	ixgbe_configure(adapter);
+	ixgbe_configure(adapter); //config ixgbe nic interface
 
 	err = ixgbe_request_irq(adapter);
 	if (err)

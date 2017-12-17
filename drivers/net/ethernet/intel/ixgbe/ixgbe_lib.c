@@ -623,7 +623,7 @@ static bool ixgbe_set_rss_queues(struct ixgbe_adapter *adapter)
 	f = &adapter->ring_feature[RING_F_RSS];
 	rss_i = f->limit;
 
-	f->indices = rss_i;
+	f->indices = rss_i; //16
 
 	if (hw->mac.type < ixgbe_mac_X550)
 		f->mask = IXGBE_RSS_16Q_MASK;
@@ -641,7 +641,7 @@ static bool ixgbe_set_rss_queues(struct ixgbe_adapter *adapter)
 	if (rss_i > 1 && adapter->atr_sample_rate) {
 		f = &adapter->ring_feature[RING_F_FDIR];
 
-		rss_i = f->indices = f->limit;
+		rss_i = f->indices = f->limit; //63 or online cpu
 
 		if (!(adapter->flags & IXGBE_FLAG_FDIR_PERFECT_CAPABLE))
 			adapter->flags |= IXGBE_FLAG_FDIR_HASH_CAPABLE;
