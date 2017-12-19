@@ -1074,8 +1074,8 @@ static u64 ixgbe_get_tx_pending(struct ixgbe_ring *ring)
 		adapter = netdev_priv(ring->netdev);
 
 	hw = &adapter->hw;
-	head = IXGBE_READ_REG(hw, IXGBE_TDH(ring->reg_idx));
-	tail = IXGBE_READ_REG(hw, IXGBE_TDT(ring->reg_idx));
+	head = IXGBE_READ_REG(hw, IXGBE_TDH(ring->reg_idx));//??? THD
+	tail = IXGBE_READ_REG(hw, IXGBE_TDT(ring->reg_idx)); //??? TDT
 
 	if (head != tail)
 		return (head < tail) ?
@@ -3168,7 +3168,7 @@ static irqreturn_t ixgbe_msix_other(int irq, void *data)
 
 static irqreturn_t ixgbe_msix_clean_rings(int irq, void *data)
 {
-	struct ixgbe_q_vector *q_vector = data;
+	struct ixgbe_q_vector *q_vector = data; //this is the cookie data
 
 	/* EIAM disabled interrupts (on this vector) for us */
 
@@ -3251,13 +3251,13 @@ static int ixgbe_request_msix_irqs(struct ixgbe_adapter *adapter)
 	unsigned int ri = 0, ti = 0;
 	int vector, err;
 
-	for (vector = 0; vector < adapter->num_q_vectors; vector++) {
-		struct ixgbe_q_vector *q_vector = adapter->q_vector[vector];
+	for (vector = 0; vector < adapter->num_q_vectors; vector++) { //for every vector
+		struct ixgbe_q_vector *q_vector = adapter->q_vector[vector]; //pointer array
 		struct msix_entry *entry = &adapter->msix_entries[vector];
 
 		if (q_vector->tx.ring && q_vector->rx.ring) {
 			snprintf(q_vector->name, sizeof(q_vector->name),
-				 "%s-TxRx-%u", netdev->name, ri++);
+				 "%s-TxRx-%u", netdev->name, ri++);  //used in proc/interrupt log
 			ti++;
 		} else if (q_vector->rx.ring) {
 			snprintf(q_vector->name, sizeof(q_vector->name),
@@ -3269,17 +3269,31 @@ static int ixgbe_request_msix_irqs(struct ixgbe_adapter *adapter)
 			/* skip this unused q_vector */
 			continue;
 		}
-		err = request_irq(entry->vector, &ixgbe_msix_clean_rings, 0,
-				  q_vector->name, q_vector);
+        /**
+ *  request_threaded_irq - allocate an interrupt line
+ *  @irq: Interrupt line to allocate
+ *  @handler: Function to be called when the IRQ occurs.
+ *        Primary handler for threaded interrupts
+ *        If NULL and thread_fn != NULL the default
+ *        primary handler is installed
+ *  @thread_fn: Function called from the irq handler thread                                                                                                                                                        
+ *          If NULL, no irq thread is created
+ *  @irqflags: Interrupt type flags
+ *  @devname: An ascii name for the claiming device
+ *  @dev_id: A cookie passed back to the handler function
+ */
+
+		err = request_irq(entry->vector, &ixgbe_msix_clean_rings, 0, //ixgbe_msix_clean_rings,is the physical interrupt handler to handle rx or tx
+				  q_vector->name, q_vector); //regster intr to every vector
 		if (err) {
 			e_err(probe, "request_irq failed for MSIX interrupt "
 			      "Error: %d\n", err);
 			goto free_queue_irqs;
 		}
 		/* If Flow Director is enabled, set interrupt affinity */
-		if (adapter->flags & IXGBE_FLAG_FDIR_HASH_CAPABLE) {
+		if (adapter->flags & IXGBE_FLAG_FDIR_HASH_CAPABLE) { //if use fd
 			/* assign the mask for this irq */
-			irq_set_affinity_hint(entry->vector,
+			irq_set_affinity_hint(entry->vector, //中断亲和力是指将一个或多个中断源绑定到特定的 CPU 上运行
 					      &q_vector->affinity_mask);
 		}
 	}
@@ -3395,7 +3409,7 @@ static int ixgbe_request_irq(struct ixgbe_adapter *adapter)
 	int err;
 
 	if (adapter->flags & IXGBE_FLAG_MSIX_ENABLED)
-		err = ixgbe_request_msix_irqs(adapter);
+		err = ixgbe_request_msix_irqs(adapter); //normally this works
 	else if (adapter->flags & IXGBE_FLAG_MSI_ENABLED)
 		err = request_irq(adapter->pdev->irq, ixgbe_intr, 0,
 				  netdev->name, adapter);
@@ -4656,7 +4670,7 @@ static void ixgbe_restore_vlan(struct ixgbe_adapter *adapter)
 {
 	u16 vid = 1;
 
-	ixgbe_vlan_rx_add_vid(adapter->netdev, htons(ETH_P_8021Q), 0);
+	ixgbe_vlan_rx_add_vid(adapter->netdev, htons(ETH_P_8021Q), 0); //默认native vlan
 
 	for_each_set_bit_from(vid, adapter->active_vlans, VLAN_N_VID)
 		ixgbe_vlan_rx_add_vid(adapter->netdev, htons(ETH_P_8021Q), vid);
@@ -4912,7 +4926,7 @@ void ixgbe_set_rx_mode(struct net_device *netdev)
 	int count;
 
 	/* Check for Promiscuous and All Multicast modes */
-	fctrl = IXGBE_READ_REG(hw, IXGBE_FCTRL);
+	fctrl = IXGBE_READ_REG(hw, IXGBE_FCTRL); //Filter Control Register
 
 	/* set all bits that we expect to always be set */
 	fctrl &= ~IXGBE_FCTRL_SBP; /* disable store-bad-packets */
@@ -4924,12 +4938,12 @@ void ixgbe_set_rx_mode(struct net_device *netdev)
 	fctrl &= ~(IXGBE_FCTRL_UPE | IXGBE_FCTRL_MPE);
 	if (netdev->flags & IFF_PROMISC) {
 		hw->addr_ctrl.user_set_promisc = true;
-		fctrl |= (IXGBE_FCTRL_UPE | IXGBE_FCTRL_MPE);
+		fctrl |= (IXGBE_FCTRL_UPE | IXGBE_FCTRL_MPE);//enable Unicast Promiscuous Enable and Multicast Promiscuous
 		vmolr |= IXGBE_VMOLR_MPE;
-		features &= ~NETIF_F_HW_VLAN_CTAG_FILTER;
+		features &= ~NETIF_F_HW_VLAN_CTAG_FILTER; //disable qinq filter
 	} else {
 		if (netdev->flags & IFF_ALLMULTI) {
-			fctrl |= IXGBE_FCTRL_MPE;
+			fctrl |= IXGBE_FCTRL_MPE; //enable Multicast Promiscuous to accepts all multicast packets
 			vmolr |= IXGBE_VMOLR_MPE;
 		}
 		hw->addr_ctrl.user_set_promisc = false;
@@ -5479,7 +5493,7 @@ static void ixgbe_configure(struct ixgbe_adapter *adapter)
 	ixgbe_configure_virtualization(adapter); //if enable sriov
 
 	ixgbe_set_rx_mode(adapter->netdev);
-	ixgbe_restore_vlan(adapter);
+	ixgbe_restore_vlan(adapter); //add vid
 
 	switch (hw->mac.type) {
 	case ixgbe_mac_82599EB:
@@ -5496,7 +5510,7 @@ static void ixgbe_configure(struct ixgbe_adapter *adapter)
 	} else if (adapter->flags & IXGBE_FLAG_FDIR_PERFECT_CAPABLE) {
 		ixgbe_init_fdir_perfect_82599(&adapter->hw,
 					      adapter->fdir_pballoc);
-		ixgbe_fdir_filter_restore(adapter);
+		ixgbe_fdir_filter_restore(adapter); //maybe the add flow director register
 	}
 
 	switch (hw->mac.type) {
@@ -5663,7 +5677,7 @@ static void ixgbe_up_complete(struct ixgbe_adapter *adapter)
 	u32 ctrl_ext;
 
 	ixgbe_get_hw_control(adapter);
-	ixgbe_setup_gpie(adapter);
+	ixgbe_setup_gpie(adapter); //??? inter EIAM disable interrupt by eiam auto mask
 
 	if (adapter->flags & IXGBE_FLAG_MSIX_ENABLED)
 		ixgbe_configure_msix(adapter);
@@ -5679,7 +5693,7 @@ static void ixgbe_up_complete(struct ixgbe_adapter *adapter)
 
 	smp_mb__before_atomic();
 	clear_bit(__IXGBE_DOWN, &adapter->state);
-	ixgbe_napi_enable_all(adapter);
+	ixgbe_napi_enable_all(adapter); //enable napi change the napi state
 
 	if (ixgbe_is_sfp(hw)) {
 		ixgbe_sfp_link_config(adapter);
@@ -5691,7 +5705,7 @@ static void ixgbe_up_complete(struct ixgbe_adapter *adapter)
 
 	/* clear any pending interrupts, may auto mask */
 	IXGBE_READ_REG(hw, IXGBE_EICR);
-	ixgbe_irq_enable(adapter, true, true);
+	ixgbe_irq_enable(adapter, true, true); //???through EIMS mask
 
 	/*
 	 * If this adapter has a fan, check to see if we had a failure
@@ -6149,7 +6163,7 @@ static int ixgbe_sw_init(struct ixgbe_adapter *adapter,
 	adapter->ring_feature[RING_F_RSS].limit = rss; //ring_feature rss, this value will be used to alloc q_vector if the feather used is rss
 	adapter->flags2 |= IXGBE_FLAG2_RSC_CAPABLE;
 	adapter->max_q_vectors = MAX_Q_VECTORS_82599;
-	adapter->atr_sample_rate = 20;
+	adapter->atr_sample_rate = 20; //for flow director ATR(application targeting routing) mode 
 	fdir = min_t(int, IXGBE_MAX_FDIR_INDICES, num_online_cpus());
 	adapter->ring_feature[RING_F_FDIR].limit = fdir;//flow director ring feature
 	adapter->fdir_pballoc = IXGBE_FDIR_PBALLOC_64K;
@@ -6641,7 +6655,7 @@ int ixgbe_open(struct net_device *netdev)
 
 	ixgbe_configure(adapter); //config ixgbe nic interface
 
-	err = ixgbe_request_irq(adapter);
+	err = ixgbe_request_irq(adapter); //request physical interrupt
 	if (err)
 		goto err_req_irq;
 
@@ -6651,7 +6665,7 @@ int ixgbe_open(struct net_device *netdev)
 	else
 		queues = adapter->num_tx_queues;
 
-	err = netif_set_real_num_tx_queues(netdev, queues);
+	err = netif_set_real_num_tx_queues(netdev, queues); //flush the queues to the real num tx queues
 	if (err)
 		goto err_set_queues;
 
@@ -6660,15 +6674,15 @@ int ixgbe_open(struct net_device *netdev)
 		queues = IXGBE_MAX_L2A_QUEUES;
 	else
 		queues = adapter->num_rx_queues;
-	err = netif_set_real_num_rx_queues(netdev, queues);
+	err = netif_set_real_num_rx_queues(netdev, queues); //the same as tx real queues
 	if (err)
 		goto err_set_queues;
 
-	ixgbe_ptp_init(adapter);
+	ixgbe_ptp_init(adapter); //point to point like vxlan gre
 
 	ixgbe_up_complete(adapter);
 
-	ixgbe_clear_udp_tunnel_port(adapter, IXGBE_VXLANCTRL_ALL_UDPPORT_MASK);
+	ixgbe_clear_udp_tunnel_port(adapter, IXGBE_VXLANCTRL_ALL_UDPPORT_MASK); //remove IXGBE_VXLANCTRL_ALL_UDPPORT_MASK from vxlanctrl register
 	udp_tunnel_get_rx_info(netdev);
 
 	return 0;

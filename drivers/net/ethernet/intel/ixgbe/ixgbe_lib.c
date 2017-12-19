@@ -622,7 +622,9 @@ static bool ixgbe_set_rss_queues(struct ixgbe_adapter *adapter)
 	/* set mask for 16 queue limit of RSS */
 	f = &adapter->ring_feature[RING_F_RSS];
 	rss_i = f->limit;
-
+    /*
+     * RSS 会分发数据到不同的cpu core，但是只能作分发，而且不能保证分发的core是application所使用的core
+     */
 	f->indices = rss_i; //16
 
 	if (hw->mac.type < ixgbe_mac_X550)
