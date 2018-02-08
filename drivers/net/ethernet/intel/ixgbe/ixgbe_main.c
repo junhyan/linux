@@ -2060,7 +2060,7 @@ static struct ixgbe_rx_buffer *ixgbe_get_rx_buffer(struct ixgbe_ring *rx_ring,
 {
 	struct ixgbe_rx_buffer *rx_buffer;
 
-	rx_buffer = &rx_ring->rx_buffer_info[rx_ring->next_to_clean];
+	rx_buffer = &rx_ring->rx_buffer_info[rx_ring->next_to_clean]; //get the next to clean rx buffer
 	prefetchw(rx_buffer->page);
 	*skb = rx_buffer->skb;
 
@@ -3200,7 +3200,7 @@ int ixgbe_poll(struct napi_struct *napi, int budget)
 #endif
 
 	ixgbe_for_each_ring(ring, q_vector->tx) {
-		if (!ixgbe_clean_tx_irq(q_vector, ring, budget))
+		if (!ixgbe_clean_tx_irq(q_vector, ring, budget)) //is the DD bit is set, reclaim the tx source
 			clean_complete = false;
 	}
 
@@ -3210,7 +3210,7 @@ int ixgbe_poll(struct napi_struct *napi, int budget)
 
 	/* attempt to distribute budget to each queue fairly, but don't allow
 	 * the budget to go below 1 because we'll exit polling */
-	if (q_vector->rx.count > 1)
+	if (q_vector->rx.count > 1) //???need to find out the count assignment
 		per_ring_budget = max(budget/q_vector->rx.count, 1);
 	else
 		per_ring_budget = budget;
@@ -6680,7 +6680,7 @@ int ixgbe_open(struct net_device *netdev)
 
 	ixgbe_ptp_init(adapter); //point to point like vxlan gre
 
-	ixgbe_up_complete(adapter);
+	ixgbe_up_complete(adapter); //disable vector interrpt
 
 	ixgbe_clear_udp_tunnel_port(adapter, IXGBE_VXLANCTRL_ALL_UDPPORT_MASK); //remove IXGBE_VXLANCTRL_ALL_UDPPORT_MASK from vxlanctrl register
 	udp_tunnel_get_rx_info(netdev);
